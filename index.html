@@ -336,6 +336,34 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
 .foot-word{display:block;margin:var(--s-5) 0 0;font-family:var(--display);font-weight:700;font-size:clamp(110px,22vw,300px);line-height:.72;letter-spacing:-.05em;color:var(--on-dark);opacity:.08;white-space:nowrap;text-align:center;margin-bottom:-.3em;user-select:none;-webkit-user-select:none;pointer-events:none}
 
 /* ---------- toast ---------- */
+/* ---------- окно отправки письма (форма → Gmail / почтовая программа / копия) ---------- */
+.mail-dlg{width:min(560px,100% - 24px);max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain;padding:0;border:0;border-radius:var(--r-xl);background:var(--card);color:var(--ink);box-shadow:var(--sh-lg)}
+.mail-dlg::backdrop{background:rgba(15,35,64,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.mail-dlg[open]{animation:dlgIn var(--dur-slow) var(--ease-out) both}
+.mail-dlg[open]::backdrop{animation:fadeIn var(--dur-slow) var(--ease-out) both}
+@keyframes dlgIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.mail-dlg form{display:grid;gap:var(--s-4);padding:var(--s-6) var(--s-6) var(--s-5)}
+.mail-dlg header{display:flex;align-items:flex-start;gap:var(--s-4)}
+.mail-dlg h2{margin:0;font-family:var(--display);font-weight:500;font-size:22px;line-height:1.2;letter-spacing:-.02em;color:var(--navy)}
+.mail-dlg header p{margin:6px 0 0;font-size:14px;color:var(--muted)}
+.mail-dlg .x{margin-left:auto;flex:none}
+.fields{display:grid;gap:var(--s-4)}
+.fld{display:grid;gap:6px}
+.fld label{font-size:14px;font-weight:700;color:var(--ink-2)}
+.fld label i{font-style:normal;font-weight:600;color:var(--muted-2)}
+.fld input,.fld textarea{width:100%;min-height:46px;padding:11px 14px;border:1.5px solid var(--line-2);border-radius:var(--r-md);background:#fff;font:inherit;font-size:16px;color:var(--ink);transition:border-color var(--dur-fast) var(--ease-out)}
+.fld textarea{min-height:88px;resize:vertical}
+.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--navy)}
+.fld-row{display:grid;gap:var(--s-4);grid-template-columns:1fr 1fr}
+@media (max-width:480px){.fld-row{grid-template-columns:1fr}.mail-dlg form{padding:var(--s-5) var(--s-4) var(--s-4)}}
+.send{display:grid;gap:var(--s-2);padding-top:var(--s-2);border-top:1px solid var(--line)}
+.send-title{font-size:13px;font-weight:700;color:var(--muted);margin-top:var(--s-2)}
+.send-btns{display:grid;gap:var(--s-2);grid-template-columns:1fr 1fr}
+.send-btns .btn{width:100%;white-space:normal;text-align:center}
+.send-btns .btn-call{grid-column:1/-1}
+.send-hint{margin:0;font-size:13px;color:var(--muted)}
+
 .toast{position:fixed;left:50%;bottom:20px;z-index:var(--z-toast);transform:translate(-50%,20px);opacity:0;max-width:calc(100% - 32px);background:var(--ink);color:var(--on-dark);padding:var(--s-3) 18px;border-radius:var(--r-md);font-weight:600;font-size:15px;pointer-events:none;transition:opacity var(--dur-base) var(--ease-in),transform var(--dur-base) var(--ease-in)}
 .toast.show{opacity:1;transform:translate(-50%,0);transition-timing-function:var(--ease-out)}
 
@@ -365,7 +393,7 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
       <span class="brand-text">Наш дом · «Аура»<small>Справочник соседей</small></span>
     </a>
     <nav aria-label="Быстрые ссылки">
-      <a class="toplink toplink-join" href="#join">Добавить услугу</a>
+      <a class="toplink toplink-join" data-mail="join" href="#join">Добавить услугу</a>
       <a class="toplink accent" href="#dev">Нужен сайт?</a>
     </nav>
   </div>
@@ -417,10 +445,10 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
       <h2 id="join-title">Тоже что-то умеете? Расскажите соседям</h2>
       <p>Справочник собирают сами жители. Чем больше в&nbsp;нём соседей, тем проще найти человека, которого знают в&nbsp;доме, а&nbsp;не&nbsp;случайное объявление.</p>
     </div>
-    <a class="join-card" id="joinMail" href="mailto:romantriton@gmail.com">
+    <a class="join-card" id="joinMail" data-mail="join" href="mailto:romantriton@gmail.com">
       <span class="join-plus" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
       <b>Здесь может быть ваша карточка</b>
-      <span>Откроется письмо с&nbsp;заготовкой: услуга, имя, телефон</span>
+      <span>Заполните короткую форму: услуга, имя, телефон</span>
       <span class="go">Добавить услугу <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
     </a>
   </section>
@@ -450,7 +478,7 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
     <div class="contact">
       <div class="sig"><span class="avatar" aria-hidden="true">Р</span><span><b>Роман</b><small>сосед, разработчик</small></span></div>
       <div class="mail-row">
-        <a class="btn btn-call" id="devMail" href="mailto:romantriton@gmail.com"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>Написать на&nbsp;почту</a>
+        <a class="btn btn-call" id="devMail" data-mail="dev" href="mailto:romantriton@gmail.com"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>Написать на&nbsp;почту</a>
         <span class="email"><span>romantriton@gmail.com</span><button class="btn icon-btn" type="button" data-copy-email="romantriton@gmail.com" aria-label="Скопировать адрес почты" data-tip="Скопировать адрес"></button></span>
       </div>
     </div>
@@ -466,6 +494,25 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
   </div>
   <span class="foot-word" aria-hidden="true">Аура</span>
 </footer>
+
+<dialog class="mail-dlg" id="mailDlg" aria-labelledby="mailDlgTitle">
+  <form id="mailForm" novalidate>
+    <header>
+      <div><h2 id="mailDlgTitle"></h2><p id="mailDlgLead"></p></div>
+      <button class="btn icon-btn x" type="button" id="mailDlgClose" aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </header>
+    <div id="mailFields" class="fields"></div>
+    <div class="send">
+      <span class="send-title">Как отправить</span>
+      <div class="send-btns">
+        <button class="btn btn-call" type="submit" value="gmail" id="sendPrimary"></button>
+        <button class="btn btn-outline" type="submit" value="app" id="sendSecondary"></button>
+        <button class="btn btn-ghost" type="submit" value="copy">Скопировать текст</button>
+      </div>
+      <p class="send-hint">Почта на&nbsp;Яндексе или Mail.ru? Нажмите «Скопировать текст» и&nbsp;вставьте в&nbsp;новое письмо на&nbsp;<b>romantriton@gmail.com</b> — или пришлите в&nbsp;любой мессенджер.</p>
+    </div>
+  </form>
+</dialog>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -815,6 +862,93 @@ function onScroll() {
 }
 window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
 document.querySelector(".topbar").addEventListener("focusin", () => document.documentElement.classList.remove("nav-hidden"));
+
+/* ---------- окно письма: mailto на ПК без почтовой программы не открывается — даём Gmail в браузере и копию текста ---------- */
+const IS_TOUCH = matchMedia("(pointer: coarse)").matches;
+const MAIL_FORMS = {
+  join: {
+    title: "Добавить услугу в справочник",
+    lead: "Заполните — письмо уйдёт Роману, он добавит вашу карточку.",
+    subject: MAIL_JOIN_SUBJECT,
+    fields: [
+      { id: "svc", label: "Услуга", required: true, placeholder: "Например: торты на заказ" },
+      { row: [
+        { id: "name", label: "Имя", required: true, placeholder: "Как вас подписать" },
+        { id: "phone", label: "Телефон", required: true, type: "tel", placeholder: "+7 …" },
+      ] },
+      { id: "entrance", label: "Подъезд", optional: true, placeholder: "Например: 2-й" },
+      { id: "about", label: "Пара слов о себе", optional: true, textarea: true, placeholder: "Опыт, что именно делаете, ссылки на работы" },
+    ],
+  },
+  dev: {
+    title: "Написать Роману",
+    lead: "Пара слов о деле — отвечу, с чего начать.",
+    subject: MAIL_DEV_SUBJECT,
+    fields: [
+      { row: [
+        { id: "name", label: "Имя", required: true, placeholder: "Как к вам обращаться" },
+        { id: "contact", label: "Телефон или почта", required: true, placeholder: "Куда ответить" },
+      ] },
+      { id: "task", label: "Чем занимаетесь и что нужно", required: true, textarea: true, placeholder: "Например: делаю торты, хочу страницу с фото и заказом" },
+    ],
+  },
+};
+let mailMode = "join";
+
+const plainLabel = (f) => f.label.replace(/ /g, " ");
+const flatFields = (mode) => MAIL_FORMS[mode].fields.flatMap((f) => f.row || [f]);
+
+function fieldHtml(f) {
+  const attrs = `id="f-${f.id}" name="${f.id}" placeholder="${esc(f.placeholder || "")}"${f.required ? " required" : ""}`;
+  const input = f.textarea ? `<textarea ${attrs}></textarea>` : `<input ${attrs} type="${f.type || "text"}" autocomplete="${f.type === "tel" ? "tel" : "off"}">`;
+  return `<div class="fld"><label for="f-${f.id}">${esc(f.label)}${f.optional ? " <i>— по желанию</i>" : ""}</label>${input}</div>`;
+}
+
+function openMailDialog(mode) {
+  mailMode = mode;
+  const cfg = MAIL_FORMS[mode];
+  $("#mailDlgTitle").textContent = cfg.title;
+  $("#mailDlgLead").textContent = cfg.lead;
+  $("#mailFields").innerHTML = cfg.fields.map((f) => f.row ? `<div class="fld-row">${f.row.map(fieldHtml).join("")}</div>` : fieldHtml(f)).join("");
+  // на телефоне почтовое приложение есть почти всегда, на ПК — нет: главная кнопка разная
+  $("#sendPrimary").value = IS_TOUCH ? "app" : "gmail";
+  $("#sendPrimary").textContent = IS_TOUCH ? "Открыть в почте" : "Отправить через Gmail";
+  $("#sendSecondary").value = IS_TOUCH ? "gmail" : "app";
+  $("#sendSecondary").textContent = IS_TOUCH ? "Через Gmail" : "Почтовая программа";
+  $("#mailDlg").showModal();
+  if (!IS_TOUCH) $("#mailFields").querySelector("input,textarea").focus(); // на телефоне клавиатура закрыла бы полформы
+}
+
+function mailBody() {
+  return flatFields(mailMode).map((f) => `${plainLabel(f)}: ${$("#f-" + f.id).value.trim()}`).join("\r\n");
+}
+
+function gmailUrl(subject, body) {
+  return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+$("#mailForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const missing = flatFields(mailMode).find((f) => f.required && !$("#f-" + f.id).value.trim());
+  if (missing) { $("#f-" + missing.id).focus(); toast("Заполните поле «" + plainLabel(missing) + "»"); return; }
+  const how = e.submitter ? e.submitter.value : "gmail";
+  const subject = MAIL_FORMS[mailMode].subject, body = mailBody();
+  if (how === "copy") {
+    copyText(`Кому: ${EMAIL}\r\nТема: ${subject}\r\n\r\n${body}`).then(() => toast("Текст скопирован — вставьте в письмо на " + EMAIL));
+    return;
+  }
+  if (how === "gmail") window.open(gmailUrl(subject, body), "_blank", "noopener");
+  else location.href = mailto(subject, body);
+  $("#mailDlg").close();
+});
+$("#mailDlgClose").addEventListener("click", () => $("#mailDlg").close());
+$("#mailDlg").addEventListener("click", (e) => { if (e.target === $("#mailDlg")) $("#mailDlg").close(); });
+document.addEventListener("click", (e) => {
+  const opener = e.target.closest("[data-mail]");
+  if (!opener || typeof HTMLDialogElement !== "function") return; // без <dialog> остаётся обычная mailto-ссылка
+  e.preventDefault();
+  openMailDialog(opener.dataset.mail);
+});
 
 $("#joinMail").href = mailto(MAIL_JOIN_SUBJECT, MAIL_JOIN_BODY);
 $("#devMail").href = mailto(MAIL_DEV_SUBJECT);
