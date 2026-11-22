@@ -363,6 +363,16 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
 .house-info .links{margin:0}
 .house-src{margin:var(--s-3) 0 0;font-size:13px;color:var(--muted)}
 
+.nowrap{white-space:nowrap}
+.tel-big{display:inline-block;padding-block:12px;margin-block:-12px}
+.near .t .soon{font-size:15px;color:#f07aa8}
+@media (max-width:480px){.near li{grid-template-columns:56px 1fr;gap:var(--s-3)}}
+html.dlg-open{overflow:hidden}
+.form-msg{margin:0;min-height:1.4em;font-size:14px;font-weight:700;color:var(--crimson)}
+.form-msg.ok{color:#1d7a46}
+.fld [aria-invalid="true"]{border-color:var(--crimson)}
+@media (max-width:480px){.fld textarea{min-height:64px}.mail-dlg form{gap:var(--s-3)}}
+
 /* ---------- окно отправки письма (форма → Gmail / почтовая программа / копия) ---------- */
 .mail-dlg{width:min(560px,100% - 24px);max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain;padding:0;border:0;border-radius:var(--r-xl);background:var(--card);color:var(--ink);box-shadow:var(--sh-lg)}
 .mail-dlg::backdrop{background:rgba(15,35,64,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
@@ -378,7 +388,7 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
 .fields{display:grid;gap:var(--s-4)}
 .fld{display:grid;gap:6px}
 .fld label{font-size:14px;font-weight:700;color:var(--ink-2)}
-.fld label i{font-style:normal;font-weight:600;color:var(--muted-2)}
+.fld label i{font-style:normal;font-weight:600;color:var(--muted)}
 .fld input,.fld textarea{width:100%;min-height:46px;padding:11px 14px;border:1.5px solid var(--line-2);border-radius:var(--r-md);background:#fff;font:inherit;font-size:16px;color:var(--ink);transition:border-color var(--dur-fast) var(--ease-out)}
 .fld textarea{min-height:88px;resize:vertical}
 .fld input:focus,.fld textarea:focus{outline:none;border-color:var(--navy)}
@@ -404,6 +414,11 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
   .hero-copy{margin:0;padding:0}.hero h1{text-shadow:none}.lead,.stats li,.stats b{color:var(--ink)}
   .kicker{background:none;border-color:var(--line-2)}
   .card.reveal{opacity:1;transform:none}
+  .near,.case{background:none!important;color:var(--ink)!important;border:1px solid var(--line-2)}
+  .near span,.near small,.case p,.case li{color:var(--ink-2)!important}
+  .near .t,.near .t .soon{color:var(--crimson)!important}
+  .mail-row .btn-call{background:none;color:var(--navy);border:1px solid}
+  .mail-dlg{display:none}
   .card{break-inside:avoid;box-shadow:none}
   .cat-head{position:static}
   .footer{background:none;color:var(--ink)}.footer .about,.footer .meta{color:var(--ink)}
@@ -493,11 +508,11 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
         <li><span class="t">10<small>мин</small></span><span><b>Метро «Ботаническая»</b><span>на&nbsp;общественном транспорте</span></span></li>
         <li><span class="t">7<small>мин</small></span><span><b>Термы и&nbsp;сноуборд на&nbsp;Уктусе</b><span>на&nbsp;машине</span></span></li>
         <li><span class="t">10<small>мин</small></span><span><b>Набережная</b><span>для прогулок</span></span></li>
-        <li><span class="t"><span style="font-size:15px;color:inherit">рядом</span></span><span><b>Уктусские горы и&nbsp;Нижнеисетский пруд</b><span>природа в&nbsp;двух шагах</span></span></li>
-        <li><span class="t"><span style="font-size:15px;color:inherit">рядом</span></span><span><b>Детские сады и&nbsp;школы</b><span>уже работают неподалёку</span></span></li>
+        <li><span class="t"><span class="soon">рядом</span></span><span><b>Уктусские горы и&nbsp;Нижнеисетский пруд</b><span>природа в&nbsp;двух шагах</span></span></li>
+        <li><span class="t"><span class="soon">рядом</span></span><span><b>Детские сады и&nbsp;школы</b><span>уже работают неподалёку</span></span></li>
         </ul>
         <div class="house-info">
-          <p><b>Застройщик — «Астра».</b> Отдел продаж: Екатеринбург, ул.&nbsp;Татищева,&nbsp;104, <a href="tel:+73433172024">+7&nbsp;(343)&nbsp;317-20-24</a>; пн–пт 9:00–20:00, сб 10:00–17:00.</p>
+          <p><b>Застройщик — «Астра».</b> Отдел продаж: Екатеринбург, ул.&nbsp;Татищева,&nbsp;104, <a class="nowrap tel-big" href="tel:+73433172024">+7&nbsp;(343)&nbsp;317-20-24</a>; <span class="nowrap">пн–пт 9:00–20:00</span>, <span class="nowrap">сб 10:00–17:00</span>.</p>
           <div class="links"><a href="https://astra-development.ru/projects/aura/ochered-1-aura/" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span>Страница дома и&nbsp;документы у&nbsp;застройщика</span></a></div>
         </div>
       </div>
@@ -564,11 +579,12 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
 <dialog class="mail-dlg" id="mailDlg" aria-labelledby="mailDlgTitle">
   <form id="mailForm" novalidate>
     <header>
-      <div><h2 id="mailDlgTitle"></h2><p id="mailDlgLead"></p></div>
+      <div><h2 id="mailDlgTitle" tabindex="-1"></h2><p id="mailDlgLead"></p></div>
       <button class="btn icon-btn x" type="button" id="mailDlgClose" aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </header>
     <div id="mailFields" class="fields"></div>
     <div class="send">
+      <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
       <span class="send-title">Как отправить</span>
       <div class="send-btns">
         <button class="btn btn-call" type="submit" value="gmail" id="sendPrimary"></button>
@@ -640,7 +656,9 @@ const specialists = (n) => `${n}${NBSP}${plural(n, "специалист", "сп
 
 /* ---------- поиск ---------- */
 function getTokens() {
-  return norm($("#q").value).split(/[\s,;]+/).filter(Boolean);
+  const q = norm($("#q").value).trim();
+  if (/^[\d\s()+\-]+$/.test(q) && digits(q).length >= 3) return [digits(q)];
+  return q.split(/[\s,;]+/).filter(Boolean);
 }
 
 function isPhoneToken(t) {
@@ -964,56 +982,132 @@ let mailMode = "join";
 const plainLabel = (f) => f.label.replace(/ /g, " ");
 const flatFields = (mode) => MAIL_FORMS[mode].fields.flatMap((f) => f.row || [f]);
 
-function fieldHtml(f) {
+function fieldHtml(f, isLast) {
   const attrs = `id="f-${f.id}" name="${f.id}" placeholder="${esc(f.placeholder || "")}"${f.required ? " required" : ""}`;
-  const input = f.textarea ? `<textarea ${attrs}></textarea>` : `<input ${attrs} type="${f.type || "text"}" autocomplete="${f.type === "tel" ? "tel" : "off"}">`;
+  const input = f.textarea
+    ? `<textarea ${attrs}></textarea>`
+    : `<input ${attrs} type="${f.type || "text"}" autocomplete="${f.type === "tel" ? "tel" : "off"}" enterkeyhint="${isLast ? "send" : "next"}">`;
   return `<div class="fld"><label for="f-${f.id}">${esc(f.label)}${f.optional ? " <i>— по желанию</i>" : ""}</label>${input}</div>`;
 }
 
-function openMailDialog(mode) {
+const drafts = {};          // введённое не теряется при случайном закрытии окна
+let mailOpener = null;
+
+function formMsg(text, ok) {
+  const m = $("#formMsg");
+  m.textContent = text || "";
+  m.classList.toggle("ok", !!ok);
+}
+
+function openMailDialog(mode, opener) {
   mailMode = mode;
+  mailOpener = opener || null;
   const cfg = MAIL_FORMS[mode];
+  const flat = flatFields(mode);
+  const lastId = flat[flat.length - 1].id;
   $("#mailDlgTitle").textContent = cfg.title;
   $("#mailDlgLead").textContent = cfg.lead;
-  $("#mailFields").innerHTML = cfg.fields.map((f) => f.row ? `<div class="fld-row">${f.row.map(fieldHtml).join("")}</div>` : fieldHtml(f)).join("");
+  $("#mailFields").innerHTML = cfg.fields.map((f) => f.row
+    ? `<div class="fld-row">${f.row.map((r) => fieldHtml(r, r.id === lastId)).join("")}</div>`
+    : fieldHtml(f, f.id === lastId)).join("");
+  const draft = drafts[mode] || {};
+  flat.forEach((f) => { $("#f-" + f.id).value = draft[f.id] || ""; });
+  formMsg("");
   // на телефоне почтовое приложение есть почти всегда, на ПК — нет: главная кнопка разная
   $("#sendPrimary").value = IS_TOUCH ? "app" : "gmail";
   $("#sendPrimary").textContent = IS_TOUCH ? "Открыть в почте" : "Отправить через Gmail";
   $("#sendSecondary").value = IS_TOUCH ? "gmail" : "app";
   $("#sendSecondary").textContent = IS_TOUCH ? "Через Gmail" : "Почтовая программа";
+  document.documentElement.classList.add("dlg-open");
   $("#mailDlg").showModal();
-  if (!IS_TOUCH) $("#mailFields").querySelector("input,textarea").focus(); // на телефоне клавиатура закрыла бы полформы
+  // на телефоне клавиатура закрыла бы полформы — фокус на заголовок, без рамки вокруг «×»
+  if (IS_TOUCH) $("#mailDlgTitle").focus();
+  else $("#mailFields").querySelector("input,textarea").focus();
+}
+
+function saveDraft() {
+  drafts[mailMode] = Object.fromEntries(flatFields(mailMode).map((f) => [f.id, $("#f-" + f.id).value]));
 }
 
 function mailBody() {
-  return flatFields(mailMode).map((f) => `${plainLabel(f)}: ${$("#f-" + f.id).value.trim()}`).join("\r\n");
+  return flatFields(mailMode).map((f) => `${plainLabel(f)}: ${$("#f-" + f.id).value.trim()}`).join("\n").replace(/\r?\n/g, "\r\n");
 }
 
 function gmailUrl(subject, body) {
   return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
+function flashLabel(btn, text) {
+  if (!btn._label) btn._label = btn.textContent;
+  btn.textContent = text;
+  clearTimeout(btn._t);
+  btn._t = setTimeout(() => { btn.textContent = btn._label; }, COPIED_MS);
+}
+
 $("#mailForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  const missing = flatFields(mailMode).find((f) => f.required && !$("#f-" + f.id).value.trim());
-  if (missing) { $("#f-" + missing.id).focus(); toast("Заполните поле «" + plainLabel(missing) + "»"); return; }
+  const flat = flatFields(mailMode);
+  flat.forEach((f) => $("#f-" + f.id).removeAttribute("aria-invalid"));
+  const missing = flat.find((f) => f.required && !$("#f-" + f.id).value.trim());
+  if (missing) {
+    const el = $("#f-" + missing.id);
+    el.setAttribute("aria-invalid", "true");
+    el.focus();
+    formMsg("Заполните поле «" + plainLabel(missing) + "»");
+    return;
+  }
   const how = e.submitter ? e.submitter.value : "gmail";
   const subject = MAIL_FORMS[mailMode].subject, body = mailBody();
   if (how === "copy") {
-    copyText(`Кому: ${EMAIL}\r\nТема: ${subject}\r\n\r\n${body}`).then(() => toast("Текст скопирован — вставьте в письмо на " + EMAIL));
+    copyText(`Кому: ${EMAIL}\r\nТема: ${subject}\r\n\r\n${body}`).then(() => {
+      flashLabel(e.submitter, "Скопировано ✓");
+      formMsg("Текст скопирован — вставьте в письмо на " + EMAIL, true);
+    });
     return;
   }
-  if (how === "gmail") window.open(gmailUrl(subject, body), "_blank", "noopener");
-  else location.href = mailto(subject, body);
-  $("#mailDlg").close();
+  if (how === "gmail") {
+    window.open(gmailUrl(subject, body), "_blank", "noopener");
+    drafts[mailMode] = {};
+    $("#mailDlg").close();
+    return;
+  }
+  // mailto: на ПК без почтовой программы ничего не откроется — окно не закрываем, подсказываем запасной путь
+  location.href = mailto(subject, body);
+  formMsg("Не открылась почта? Нажмите «Скопировать текст» или «Gmail».", true);
 });
+
+$("#mailForm").addEventListener("input", (e) => {
+  saveDraft();
+  if (e.target.value.trim()) e.target.removeAttribute("aria-invalid");
+});
+
+// Enter в однострочном поле — к следующему полю, отправка только с последнего
+$("#mailForm").addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" || e.target.tagName !== "INPUT") return;
+  const inputs = [...$("#mailFields").querySelectorAll("input,textarea")];
+  const i = inputs.indexOf(e.target);
+  if (i < inputs.length - 1) { e.preventDefault(); inputs[i + 1].focus(); }
+});
+
 $("#mailDlgClose").addEventListener("click", () => $("#mailDlg").close());
-$("#mailDlg").addEventListener("click", (e) => { if (e.target === $("#mailDlg")) $("#mailDlg").close(); });
+
+// закрыть по фону, только если и нажатие было на фоне (выделение мышью за край окна не закрывает)
+let downOnBackdrop = false;
+$("#mailDlg").addEventListener("pointerdown", (e) => { downOnBackdrop = e.target === $("#mailDlg"); });
+$("#mailDlg").addEventListener("click", (e) => {
+  if (e.target === $("#mailDlg") && downOnBackdrop) $("#mailDlg").close();
+});
+
+$("#mailDlg").addEventListener("close", () => {
+  document.documentElement.classList.remove("dlg-open");
+  if (mailOpener) mailOpener.focus({ preventScroll: true });
+});
+
 document.addEventListener("click", (e) => {
   const opener = e.target.closest("[data-mail]");
   if (!opener || typeof HTMLDialogElement !== "function") return; // без <dialog> остаётся обычная mailto-ссылка
   e.preventDefault();
-  openMailDialog(opener.dataset.mail);
+  openMailDialog(opener.dataset.mail, opener);
 });
 
 /* «наверх» и логотип: якорь #top — липкая шапка, браузер до неё не доезжает (scroll-padding) — крутим в 0 сами */
@@ -1022,6 +1116,7 @@ document.addEventListener("click", (e) => {
   e.preventDefault();
   window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   history.replaceState(null, "", location.pathname + location.search);
+  $(".brand").focus({ preventScroll: true });
 });
 
 $("#joinMail").href = mailto(MAIL_JOIN_SUBJECT, MAIL_JOIN_BODY);
