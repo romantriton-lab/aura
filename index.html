@@ -316,6 +316,9 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
 .sig .avatar{width:44px;height:44px;font-size:17px}
 .sig b{display:block;color:var(--navy);font-size:16px}
 .sig small{display:block;color:var(--muted);font-size:13.5px;font-weight:600}
+.free{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--r-full);background:var(--crimson-tint);color:var(--crimson);font-size:14px;font-weight:700}
+@media (max-width:420px){.free{font-size:13px;padding:6px 10px;gap:5px}}
+.free-note{color:var(--navy);font-weight:700}
 .mail-row{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-2) var(--s-3)}
 .mail-row .btn-call{flex:none;background:var(--navy);color:var(--on-dark)}
 .mail-row .btn-call:hover{background:var(--navy-2)}
@@ -521,7 +524,7 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
         <span class="eyebrow">Этот сайт сделал ваш сосед</span>
         <h2 id="dev-title">Нужен такой&nbsp;же удобный сайт, только про&nbsp;ваше дело?</h2>
       </div>
-      <p class="sub">Мастеру&nbsp;— страница с&nbsp;ценами и&nbsp;онлайн-записью. Кондитеру&nbsp;— витрина с&nbsp;тортами и&nbsp;кнопкой «Заказать». Юристу или бухгалтеру&nbsp;— понятная визитка. Оптовой компании&nbsp;— портал с&nbsp;заказами и&nbsp;обменом с&nbsp;1С. Напишите пару слов о&nbsp;своём деле&nbsp;— подскажу, с&nbsp;чего начать.</p>
+      <p class="sub">Мастеру&nbsp;— страница с&nbsp;ценами и&nbsp;онлайн-записью. Кондитеру&nbsp;— витрина с&nbsp;тортами и&nbsp;кнопкой «Заказать». Юристу или бухгалтеру&nbsp;— понятная визитка. Оптовой компании&nbsp;— портал с&nbsp;заказами и&nbsp;обменом с&nbsp;1С. Напишите пару слов о&nbsp;своём деле&nbsp;— подскажу, с&nbsp;чего начать. <b class="free-note">Консультация и&nbsp;разбор вашего дела&nbsp;— бесплатно.</b></p>
     </div>
     <div class="promo-body">
       <ol class="offers">
@@ -539,6 +542,7 @@ mark{background:#ffe0ea;color:inherit;border-radius:3px;padding:0 1px}
     </div>
     <div class="contact">
       <div class="sig"><span class="avatar" aria-hidden="true">Р</span><span><b>Роман</b><small>сосед, разработчик</small></span></div>
+      <span class="free"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Консультация и&nbsp;разбор&nbsp;— бесплатно</span>
       <div class="mail-row">
         <a class="btn btn-call" id="devMail" data-mail="dev" href="mailto:romantriton@gmail.com"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>Написать на&nbsp;почту</a>
         <span class="email"><span>romantriton@gmail.com</span><button class="btn icon-btn" type="button" data-copy-email="romantriton@gmail.com" aria-label="Скопировать адрес почты" data-tip="Скопировать адрес"></button></span>
@@ -944,7 +948,7 @@ const MAIL_FORMS = {
   },
   dev: {
     title: "Написать Роману",
-    lead: "Пара слов о деле — отвечу, с чего начать.",
+    lead: "Пара слов о деле — отвечу, с чего начать. Консультация и разбор — бесплатно.",
     subject: MAIL_DEV_SUBJECT,
     fields: [
       { row: [
