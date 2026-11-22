@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Для печати — листовка и справочник · ЖК «Аура»</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f5f3ef">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+<style>
+/* ---------- fonts: те же статические файлы, что у главной (инструменты/make-fonts.py), один файл на начертание ---------- */
+@font-face{font-family:"Manrope";font-style:normal;font-weight:400;font-display:swap;src:url(../fonts/manrope-400.woff2) format("woff2")}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:600;font-display:swap;src:url(../fonts/manrope-600.woff2) format("woff2")}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:700;font-display:swap;src:url(../fonts/manrope-700.woff2) format("woff2")}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:800;font-display:swap;src:url(../fonts/manrope-800.woff2) format("woff2")}
+@font-face{font-family:"Unbounded";font-style:normal;font-weight:500;font-display:swap;src:url(../fonts/unbounded-500.woff2) format("woff2")}
+@font-face{font-family:"Unbounded";font-style:normal;font-weight:700;font-display:swap;src:url(../fonts/unbounded-700.woff2) format("woff2")}
+
+/* ---------- tokens: значения главной + бумажные размеры ---------- */
+:root{
+  --navy:#142c4f; --navy-2:#1d3c68; --navy-deep:#0f2340;
+  --crimson:#c0123f;
+  --ink:#17202e; --ink-2:#3a4352; --muted:#5d6777;
+  --bg:#f5f3ef; --paper:#fffefb; --line:#e6e1d8; --line-2:#d7d1c6;
+  --on-dark:#fbfaf7;
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px;
+  --r-sm:8px; --r-md:12px; --r-full:999px;
+  --sh-paper:0 1px 2px rgba(20,44,79,.06),0 24px 50px -28px rgba(15,35,64,.45);
+  --display:"Unbounded","Manrope",system-ui,sans-serif;
+  --text:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --dur-fast:150ms; --ease-out:cubic-bezier(.23,1,.32,1);
+  --z-bar:30;
+  /* бумага: A4 и поля печати (@page ниже держит те же 12 мм) */
+  --a4-w:210mm; --a4-h:297mm; --page-pad:12mm;
+  /* полезная высота листа при печати: 297 − 2×12 = 273 мм; на 1 мм меньше — запас от округления, иначе пустой лист */
+  --print-h:272mm;
+  /* шрифт на бумаге — в пунктах */
+  --pt-micro:7.5pt; --pt-small:8.5pt; --pt-body:10.5pt; --pt-lead:13pt; --pt-h3:10.5pt; --pt-h2:17pt; --pt-stat:24pt; --pt-h1:50pt;
+  --rule:1.6mm; --hair:.25mm;
+  --qr-big:92mm; --qr-small:23mm; --logo:13mm;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--text);color:var(--ink);background:var(--bg);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:3px solid var(--crimson);outline-offset:2px;border-radius:var(--r-sm)}
+.nowrap{white-space:nowrap}
+
+/* ---------- экран: панель ---------- */
+.bar{position:sticky;top:0;z-index:var(--z-bar);background:rgba(245,243,239,.92);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+.bar-in{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-2) var(--s-3);width:min(var(--a4-w),100% - 32px);margin-inline:auto;padding-block:var(--s-2)}
+.back{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 var(--s-2);margin-left:calc(-1 * var(--s-2));border-radius:var(--r-full);color:var(--navy);font-weight:700;font-size:15px;text-decoration:none;transition:background-color var(--dur-fast) var(--ease-out)}
+.back:hover{background:rgba(20,44,79,.07)}
+.print-btn{margin-left:auto;display:inline-flex;align-items:center;gap:var(--s-2);min-height:44px;padding:0 var(--s-5);border:0;border-radius:var(--r-full);background:var(--navy);color:var(--on-dark);font:inherit;font-weight:800;font-size:15px;cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out)}
+.print-btn:hover{background:var(--navy-2)}
+.desk{display:grid;gap:var(--s-6);width:min(var(--a4-w),100% - 32px);margin:var(--s-5) auto var(--s-7)}
+.tip{margin:0;justify-self:stretch;font-size:14px;line-height:1.5;color:var(--muted)}
+.tip b{color:var(--ink-2)}
+.sheet-label{display:block;margin-bottom:var(--s-2);font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+.desk>section{min-width:0}
+.frame{width:100%;height:var(--frame-h,auto);overflow:hidden}
+
+/* лист: на экране — бумага A4 с полями, уменьшается под ширину (JS ставит --k) */
+.sheet{position:relative;width:var(--a4-w);min-height:var(--a4-h);padding:var(--page-pad);background:var(--paper);box-shadow:var(--sh-paper);transform:scale(var(--k,1));transform-origin:0 0;color:var(--ink);font-size:var(--pt-body);line-height:1.4;overflow:hidden}
+/* сброс без веса селектора: иначе он перебивает отступы компонентов (margin-left:auto и т.п.) */
+:where(.sheet) :is(h1,h2,h3,p,ul,ol){margin:0}
+
+/* ---------- лист 1: листовка ---------- */
+.flyer{display:flex;flex-direction:column;height:var(--a4-h)}
+.f-top{position:relative;display:flex;align-items:center;gap:4mm;padding-bottom:4mm;border-bottom:var(--rule) solid var(--navy)}
+.f-top svg{flex:none;width:var(--logo);height:var(--logo)}
+.f-brand{font-size:var(--pt-lead);font-weight:800;line-height:1.2;color:var(--navy);letter-spacing:-.01em}
+.f-brand small{display:block;font-size:var(--pt-small);font-weight:600;color:var(--ink-2);letter-spacing:0}
+.f-tag{margin-left:auto;font-family:var(--display);font-weight:500;font-size:var(--pt-small);color:var(--navy);text-transform:uppercase;letter-spacing:.12em;text-align:right;line-height:1.35}
+.f-head{position:relative;padding:6mm 0 5mm}
+.f-head h1{font-family:var(--display);font-weight:700;font-size:var(--pt-h1);line-height:1.02;letter-spacing:-.035em;color:var(--navy)}
+.f-head h1 em{display:block;font-style:normal;color:var(--crimson)}
+.f-stat{display:flex;flex-wrap:wrap;align-items:baseline;gap:1mm 3mm;margin-top:4mm;font-size:var(--pt-lead);font-weight:600;color:var(--ink-2)}
+.f-stat b{font-family:var(--display);font-weight:700;font-size:var(--pt-stat);letter-spacing:-.02em;color:var(--navy);font-variant-numeric:tabular-nums}
+.f-stat .sep{height:7mm;margin-inline:2mm;align-self:center;border-left:.4mm solid var(--line-2)}
+.f-mid{position:relative;display:grid;grid-template-columns:var(--qr-big) 1fr;gap:8mm;align-items:start}
+.f-qr{display:grid;gap:2.5mm;justify-items:center}
+.f-qr-box{position:relative;padding:3mm;border:.6mm solid var(--navy);border-radius:4mm}
+.f-qr-box img{display:block;width:calc(var(--qr-big) - 7.2mm);height:auto}
+.f-qr-cap{font-size:var(--pt-body);font-weight:700;color:var(--navy);text-align:center}
+.f-url{font-family:var(--display);font-weight:500;font-size:11pt;color:var(--ink);letter-spacing:-.01em;text-align:center;word-break:break-all}
+.f-side{display:flex;flex-direction:column;align-self:stretch;gap:6mm}
+.f-list{list-style:none;padding:0;display:grid;gap:5mm;counter-reset:f}
+.f-ghost{margin-top:auto;align-self:flex-end;width:44mm;height:auto;color:var(--line-2)}
+.f-list li{display:grid;grid-template-columns:9mm 1fr;gap:0 2.5mm;counter-increment:f}
+.f-list li::before{content:"0" counter(f);grid-row:span 2;font-family:var(--display);font-weight:500;font-size:var(--pt-small);color:var(--crimson);padding-top:.8mm;border-top:.5mm solid var(--crimson)}
+.f-list b{font-size:var(--pt-lead);font-weight:800;color:var(--navy);line-height:1.25}
+.f-list span{font-size:var(--pt-body);color:var(--ink-2);line-height:1.4}
+.f-cats{position:relative;display:flex;flex-wrap:wrap;gap:2mm;list-style:none;padding:0;margin:5mm 0 4mm}
+.f-cats li{padding:1mm 3mm;border:var(--hair) solid var(--navy);border-radius:var(--r-full);font-size:var(--pt-small);font-weight:700;color:var(--navy);white-space:nowrap}
+.f-join{position:relative;display:flex;align-items:center;gap:5mm;margin-top:auto;padding:5mm 6mm;border:.5mm dashed var(--navy);border-radius:4mm}
+.f-join .plus{flex:none;display:grid;place-items:center;width:11mm;height:11mm;border:.5mm solid var(--navy);border-radius:50%;color:var(--navy)}
+.f-join b{display:block;font-size:var(--pt-lead);font-weight:800;color:var(--navy)}
+.f-join span{font-size:var(--pt-body);color:var(--ink-2)}
+.f-foot{display:flex;justify-content:space-between;gap:4mm;margin-top:4mm;padding-top:2.5mm;border-top:var(--hair) solid var(--line-2);font-size:var(--pt-micro);color:var(--ink-2)}
+
+/* ---------- лист 2: справочник ---------- */
+.d-top{display:grid;grid-template-columns:1fr auto;gap:5mm;align-items:end;padding-bottom:3.5mm;border-bottom:var(--rule) solid var(--navy)}
+.d-top h2{font-family:var(--display);font-weight:700;font-size:var(--pt-h2);line-height:1.1;letter-spacing:-.025em;color:var(--navy)}
+.d-top p{margin-top:1.5mm;font-size:var(--pt-small);color:var(--ink-2)}
+.d-qr{display:flex;align-items:center;gap:3mm;text-align:right;font-size:var(--pt-small);line-height:1.35;color:var(--ink-2)}
+.d-qr b{display:block;color:var(--navy);font-weight:800}
+.d-qr .u{font-weight:700;color:var(--ink)}
+.d-qr img{flex:none;width:var(--qr-small);height:var(--qr-small)}
+.d-cols{columns:2;column-gap:8mm;padding-top:4mm}
+.d-cat{break-inside:avoid;margin-bottom:4.5mm}
+.d-cat h3{display:flex;align-items:baseline;gap:2mm;padding-bottom:1mm;margin-bottom:.5mm;border-bottom:.4mm solid var(--navy);font-family:var(--display);font-weight:500;font-size:var(--pt-h3);line-height:1.2;letter-spacing:-.01em;color:var(--navy)}
+.d-cat h3 .no{font-size:var(--pt-micro);color:var(--crimson)}
+.d-cat ul{list-style:none;padding:0}
+.d-row{display:grid;grid-template-columns:1fr auto;gap:0 3mm;align-items:baseline;padding:1.3mm 0;border-bottom:var(--hair) dotted var(--line-2);break-inside:avoid}
+.d-row:last-child{border-bottom:0}
+.d-svc{font-size:var(--pt-body);font-weight:700;line-height:1.25;color:var(--ink)}
+.d-who{grid-column:1;font-size:var(--pt-small);color:var(--ink-2);line-height:1.3}
+.d-tel{grid-row:1 / span 2;grid-column:2;align-self:center;font-size:var(--pt-body);font-weight:800;color:var(--navy);white-space:nowrap;font-variant-numeric:tabular-nums}
+.d-tel.alt{font-weight:600;font-size:var(--pt-small);color:var(--ink-2);text-align:right;white-space:normal;max-width:24mm;line-height:1.25}
+.d-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1mm 4mm;margin-top:2mm;padding-top:2.5mm;border-top:var(--hair) solid var(--line-2);font-size:var(--pt-micro);color:var(--ink-2)}
+
+/* ---------- экран: телефон ---------- */
+@media (max-width:480px){
+  .bar-in{gap:var(--s-1) var(--s-2)}
+  .back{font-size:14px}
+  .print-btn{padding:0 var(--s-4);font-size:14px}
+  .desk{margin-top:var(--s-4);gap:var(--s-5)}
+}
+
+/* ---------- печать ---------- */
+@page{size:A4;margin:12mm}
+@media print{
+  body{background:none}
+  .bar,.tip,.sheet-label{display:none}
+  .desk{display:block;width:auto;margin:0}
+  .frame{width:auto;height:auto;overflow:visible}
+  .sheet{width:auto;min-height:0;padding:0;box-shadow:none;transform:none;background:none}
+  .flyer{height:var(--print-h)}
+  section + section{break-before:page}
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="back" href="../"><span aria-hidden="true">←</span> Вернуться в&nbsp;справочник</a>
+    <button class="print-btn" type="button" id="printBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>
+      Напечатать
+    </button>
+  </div>
+</header>
+
+<main class="desk">
+  <p class="tip">Лист&nbsp;1&nbsp;— листовка для лифта и&nbsp;доски объявлений, дальше&nbsp;— весь справочник на&nbsp;одном листе. В&nbsp;окне печати: <b>A4, книжная, масштаб 100&nbsp;%</b>, снимите галочку <b>«Колонтитулы»</b>. Только листовку&nbsp;— «Страницы: 1».</p>
+
+  <section aria-labelledby="flyer-title">
+    <span class="sheet-label">Лист 1 · Листовка</span>
+    <div class="frame">
+      <article class="sheet flyer">
+        <div class="f-top">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="61" rx="15" fill="none" stroke="#142c4f" stroke-width="3"/><path d="M16 50V12h10c0 17 6 24 22 24v14z" fill="none" stroke="#142c4f" stroke-width="4" stroke-linejoin="round"/><path d="M26 12c0 17 6 24 22 24" fill="none" stroke="#c0123f" stroke-width="4" stroke-linecap="round"/></svg>
+          <p class="f-brand">Наш дом · ЖК&nbsp;«Аура»<small>Екатеринбург, Щербакова,&nbsp;145В</small></p>
+          <p class="f-tag">Справочник<br>соседей</p>
+        </div>
+
+        <div class="f-head">
+          <h1 id="flyer-title">Профессионалы <em>среди нас</em></h1>
+          <p class="f-stat" id="flyerStat"></p>
+        </div>
+
+        <div class="f-mid">
+          <div class="f-qr">
+            <div class="f-qr-box"><img src="qr-site.svg" width="41" height="41" alt="QR-код: адрес справочника соседей romantriton-lab.github.io/aura"></div>
+            <p class="f-qr-cap">Наведите камеру телефона</p>
+            <p class="f-url">romantriton-lab.github.io/aura</p>
+          </div>
+          <div class="f-side">
+          <ol class="f-list">
+            <li><b>Услуги соседей</b><span>Репетиторы, мастера по&nbsp;дому, кондитеры, юрист, бухгалтер, фотограф, красота&nbsp;— это наши соседи.</span></li>
+            <li><b>Куда звонить</b><span>Телефон в&nbsp;одно касание, номер можно сразу сохранить в&nbsp;контакты.</span></li>
+            <li><b>О&nbsp;доме</b><span>Что есть в&nbsp;доме и&nbsp;что рядом, контакты застройщика.</span></li>
+          </ol>
+          <svg class="f-ghost" viewBox="12 8 40 46" aria-hidden="true"><path d="M16 50V12h10c0 17 6 24 22 24v14z" fill="none" stroke="currentColor" stroke-width=".8" stroke-linejoin="round"/><path d="M26 12c0 17 6 24 22 24" fill="none" stroke="currentColor" stroke-width=".8" stroke-linecap="round" stroke-dasharray="1.4 1.4"/><path d="M8 50h48" stroke="currentColor" stroke-width=".8"/></svg>
+          </div>
+        </div>
+
+        <ul class="f-cats" id="flyerCats" aria-label="Направления"></ul>
+
+        <div class="f-join">
+          <span class="plus" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+          <p><b>Хотите добавить свою услугу?</b><span>Через сайт: кнопка «Добавить услугу»&nbsp;— услуга, имя, телефон.</span></p>
+        </div>
+        <p class="f-foot"><span>Сайт сделал сосед Роман · romantriton@gmail.com</span></p>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="dir-title">
+    <span class="sheet-label">Лист 2 · Справочник</span>
+    <div class="frame">
+      <article class="sheet">
+        <div class="d-top">
+          <div>
+            <h2 id="dir-title">Справочник соседей ЖК&nbsp;«Аура»</h2>
+            <p id="dirStat"></p>
+          </div>
+          <p class="d-qr"><span><b>Актуальная версия&nbsp;— на&nbsp;сайте</b><span class="u">romantriton-lab.github.io/aura</span></span><img src="qr-site.svg" width="41" height="41" alt="QR-код: адрес справочника"></p>
+        </div>
+        <div class="d-cols" id="dirCols"></div>
+        <p class="d-foot"><span>Цены, сроки и&nbsp;условия уточняйте у&nbsp;специалиста напрямую. Добавить свою услугу&nbsp;— на&nbsp;сайте, кнопка «Добавить услугу».</span><span>Сайт сделал сосед Роман · romantriton@gmail.com</span></p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<script src="../data.js"></script>
+<script>
+const NBSP = String.fromCharCode(160);
+const MM_PX = 96 / 25.4;
+const A4_WIDTH_MM = 210;
+const ADDRESS = `Екатеринбург, Щербакова,${NBSP}145В`;
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const phoneParts = (p) => p.match(/^[+]7([0-9]{3})([0-9]{3})([0-9]{2})([0-9]{2})$/);
+const fmtPhone = (p) => { const m = phoneParts(p); return m ? `+7${NBSP}(${m[1]})${NBSP}${m[2]}-${m[3]}-${m[4]}` : p; };
+
+function plural(n, one, few, many) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return one;
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+  return many;
+}
+
+const servicesWord = (n) => plural(n, "услуга", "услуги", "услуг");
+const areasWord = (n) => plural(n, "направление", "направления", "направлений");
+
+function renderFlyer() {
+  const n = PEOPLE.length, m = CATEGORIES.length;
+  $("#flyerStat").innerHTML =
+    `<span>Справочник соседей:</span> <b>${n}</b> <span>${servicesWord(n)}</span><span class="sep" aria-hidden="true"></span><b>${m}</b> <span>${areasWord(m)}</span>`;
+  $("#flyerCats").innerHTML = CATEGORIES.map((c) => `<li>${esc(c.title)}</li>`).join("");
+}
+
+function contactCell(p) {
+  if (p.phone) return `<span class="d-tel">${fmtPhone(p.phone)}</span>`;
+  const tg = (p.links || []).some((l) => l.telegram);
+  return `<span class="d-tel alt">${tg ? `Telegram${NBSP}— ссылка на${NBSP}сайте` : `Контакт на${NBSP}сайте`}</span>`;
+}
+
+function renderDirectory() {
+  const n = PEOPLE.length, m = CATEGORIES.length;
+  $("#dirStat").textContent = `${n}${NBSP}${servicesWord(n)} · ${m}${NBSP}${areasWord(m)} · ${ADDRESS}`;
+  $("#dirCols").innerHTML = CATEGORIES.map((c, i) => {
+    const rows = PEOPLE.filter((p) => p.cat === c.id).map((p) => `
+      <li class="d-row">
+        <span class="d-svc">${esc(p.svc)}</span>
+        ${contactCell(p)}
+        <span class="d-who">${esc(p.name)}${p.entrance ? ` · ${esc(p.entrance)}` : ""}</span>
+      </li>`).join("");
+    if (!rows) return "";
+    return `<div class="d-cat"><h3><span class="no">${String(i + 1).padStart(2, "0")}</span>${esc(c.title)}</h3><ul>${rows}</ul></div>`;
+  }).join("");
+}
+
+/* Превью: лист A4 ужимается под ширину экрана целиком, без горизонтальной прокрутки */
+function fitSheets() {
+  const sheetWidth = A4_WIDTH_MM * MM_PX;
+  document.querySelectorAll(".frame").forEach((frame) => {
+    const sheet = frame.firstElementChild;
+    const k = Math.min(1, frame.clientWidth / sheetWidth);
+    sheet.style.setProperty("--k", k);
+    frame.style.setProperty("--frame-h", `${sheet.offsetHeight * k}px`);
+  });
+}
+
+renderFlyer();
+renderDirectory();
+fitSheets();
+new ResizeObserver(fitSheets).observe(document.querySelector(".desk"));
+if (document.fonts) document.fonts.ready.then(fitSheets);
+$("#printBtn").addEventListener("click", () => window.print());
+</script>
+</body>
+</html>

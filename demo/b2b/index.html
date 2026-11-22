@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Демо: портал для оптовой компании · Роман, разработчик</title>
+<meta name="description" content="Демо B2B-портала: персональные цены и акции для каждого дилера, кабинет менеджера с закупкой и маржой, обмен с 1С. Данные учебные.">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0f2340">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preload" href="../../fonts/manrope-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/unbounded-700.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* ---------- шрифты справочника (те же файлы, без внешних запросов; один файл на начертание) ---------- */
+@font-face{font-family:"Manrope";font-style:normal;font-weight:400;font-display:swap;src:url(../../fonts/manrope-400.woff2) format("woff2")}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:600;font-display:swap;src:url(../../fonts/manrope-600.woff2) format("woff2")}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:700;font-display:swap;src:url(../../fonts/manrope-700.woff2) format("woff2")}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:800;font-display:swap;src:url(../../fonts/manrope-800.woff2) format("woff2")}
+@font-face{font-family:"Unbounded";font-style:normal;font-weight:500;font-display:swap;src:url(../../fonts/unbounded-500.woff2) format("woff2")}
+@font-face{font-family:"Unbounded";font-style:normal;font-weight:700;font-display:swap;src:url(../../fonts/unbounded-700.woff2) format("woff2")}
+
+/* ---------- токены: значения справочника + смысловые имена для тёмной темы ---------- */
+:root{
+  --navy:#142c4f; --navy-2:#1d3c68; --navy-deep:#0f2340;
+  --crimson:#c0123f; --crimson-on-dark:#e9558f;
+  --bg:#f5f3ef; --glow-1:rgba(192,18,63,.08); --glow-2:rgba(20,44,79,.10); --grid-line:rgba(20,44,79,.05);
+  --card:#fffefb; --sand:#faf8f4; --tint:#eef2f8; --tint-2:#e3e9f2;
+  --ink:#17202e; --ink-2:#3a4352; --muted:#5d6777; --muted-2:#8a92a0;
+  --line:#e6e1d8; --line-2:#d7d1c6;
+  --heading:var(--navy);
+  --brand:var(--navy); --brand-hover:var(--navy-2); --on-brand:#fbfaf7;
+  --accent:var(--crimson); --accent-tint:#fbe9ef; --on-accent:#fffafb;
+  --success:#1c7a4c; --success-tint:#e2f3e9;
+  --warning:#94560a; --warning-tint:#fbf0dc;
+  --off-bg:#f0ede7; --off-ink:#7b8392;
+  --bar-bg:#0f2340; --on-dark:#fbfaf7; --on-dark-2:rgba(251,250,247,.8);
+  --chrome:#ece8e1; --chrome-dot:#d3cdc2;
+  --mgr:#3c4f9c; --mgr-tint:#e9ecf8;
+  /* тона иллюстраций товаров */
+  --tone-1:#142c4f; --tone-2:#2a4d80; --tone-3:#8fa9cf; --tone-4:#dfe7f2; --tone-shadow:rgba(20,44,79,.14);
+  /* отступы */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px; --s-8:64px; --s-9:96px;
+  /* скругления */
+  --r-sm:8px; --r-md:12px; --r-lg:18px; --r-xl:28px; --r-full:999px;
+  /* тени */
+  --sh-sm:0 1px 2px rgba(20,44,79,.05),0 6px 18px -12px rgba(20,44,79,.16);
+  --sh-md:0 2px 6px rgba(20,44,79,.06),0 18px 40px -20px rgba(20,44,79,.28);
+  --sh-lg:0 30px 60px -30px rgba(15,35,64,.55);
+  --sh-xl:0 50px 90px -40px rgba(15,35,64,.55),0 18px 36px -24px rgba(15,35,64,.3);
+  --sh-inner:inset 0 1px 2px rgba(20,44,79,.08);
+  /* шрифты */
+  --display:"Unbounded","Manrope",system-ui,sans-serif;
+  --text:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  /* слои */
+  --z-base:1; --z-cartbar:20; --z-sticky:30; --z-toast:50;
+  /* движение */
+  --dur-fast:150ms; --dur-base:200ms; --dur-slow:400ms; --dur-flow:3600ms;
+  --ease-out:cubic-bezier(.23,1,.32,1); --ease-in:cubic-bezier(.4,0,1,1); --ease-in-out:cubic-bezier(.65,0,.35,1);
+  /* раскладка */
+  --bar-h:52px; --roles-h:72px;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0c1422; --glow-1:rgba(233,85,143,.10); --glow-2:rgba(80,120,190,.16); --grid-line:rgba(200,215,240,.035);
+  --card:#131d30; --sand:#101a2b; --tint:#1a2740; --tint-2:#22324f;
+  --ink:#e8ecf3; --ink-2:#c3cad6; --muted:#9ba5b6; --muted-2:#77829a;
+  --line:#223049; --line-2:#2f3f5d;
+  --heading:#e9eef7;
+  --brand:#3d67aa; --brand-hover:#4a75b9; --on-brand:#fbfaf7;
+  --accent:#ee6a9b; --accent-tint:rgba(238,106,155,.15); --on-accent:#1c0711;
+  --success:#5fca97; --success-tint:rgba(95,202,151,.14);
+  --warning:#f0b45a; --warning-tint:rgba(240,180,90,.14);
+  --off-bg:#172238; --off-ink:#6f7a91;
+  --bar-bg:#070d18;
+  --chrome:#0f1829; --chrome-dot:#2a3753;
+  --mgr:#9aaaf0; --mgr-tint:rgba(154,170,240,.13);
+  --tone-1:#a9c1e6; --tone-2:#5f86c2; --tone-3:#2e4c7d; --tone-4:#1b2a45; --tone-shadow:rgba(0,0,0,.35);
+  --sh-sm:0 1px 2px rgba(0,0,0,.3),0 6px 18px -12px rgba(0,0,0,.5);
+  --sh-md:0 2px 6px rgba(0,0,0,.3),0 18px 40px -20px rgba(0,0,0,.6);
+  --sh-lg:0 30px 60px -30px rgba(0,0,0,.8);
+  --sh-xl:0 50px 90px -40px rgba(0,0,0,.85),0 18px 36px -24px rgba(0,0,0,.6);
+}}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--bar-h) + var(--roles-h) + var(--s-4))}
+body{margin:0;min-width:320px;font-family:var(--text);color:var(--ink);background:var(--bg);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(55% 45% at 0% 0%,var(--glow-1),transparent 70%),
+    radial-gradient(50% 60% at 100% 20%,var(--glow-2),transparent 70%),
+    linear-gradient(var(--grid-line) 1px,transparent 1px) 0 0/40px 40px,
+    linear-gradient(90deg,var(--grid-line) 1px,transparent 1px) 0 0/40px 40px}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+h1,h2,h3,h4{text-wrap:balance}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:var(--r-sm)}
+.wrap{width:min(1180px,100% - 32px);margin-inline:auto}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- плашка «демо» ---------- */
+.demo-bar{position:sticky;top:0;z-index:var(--z-sticky);background:var(--bar-bg);color:var(--on-dark-2);font-size:14px;line-height:1.35}
+.demo-bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--s-2) var(--s-4);min-height:52px;padding-block:6px}
+.demo-bar p{margin:0;display:flex;align-items:center;gap:10px}
+.demo-bar p .short{display:none}
+@media (max-width:640px){.demo-bar p .long{display:none}.demo-bar p .short{display:inline}}
+.demo-tag{flex:none;font-family:var(--display);font-weight:500;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:var(--r-full);background:var(--crimson);color:var(--on-dark)}
+.back-link{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:var(--r-full);color:var(--on-dark);font-weight:700;text-decoration:none;background:rgba(251,250,247,.1);transition:background-color var(--dur-fast) var(--ease-out)}
+.back-link:hover{background:rgba(251,250,247,.18)}
+.back-link:focus-visible{outline-color:var(--crimson-on-dark)}
+@media (max-width:640px){
+  .demo-bar{font-size:12.5px}
+  .demo-tag{display:none}
+  .back-link{padding:0 10px;font-size:13px}
+  .back-link .long{display:none}
+}
+
+/* ---------- вступление ---------- */
+.intro{display:grid;gap:var(--s-4) var(--s-8);padding-block:var(--s-7) var(--s-6)}
+@media (min-width:900px){.intro{grid-template-columns:1.2fr 1fr;align-items:end;padding-block:var(--s-8) var(--s-6)}}
+.eyebrow{display:block;margin-bottom:var(--s-3);font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.intro h1{margin:0;font-family:var(--display);font-weight:700;font-size:clamp(28px,5.2vw,58px);line-height:1.05;letter-spacing:-.035em;color:var(--heading)}
+.intro h1 em{font-style:normal;color:var(--accent)}
+.intro .lead{margin:0;font-size:clamp(16px,1.4vw,18px);color:var(--ink-2)}
+.intro .lead b{color:var(--heading)}
+
+/* ---------- переключатель ролей ---------- */
+.roles{position:sticky;top:var(--bar-h);z-index:var(--z-sticky);padding-block:var(--s-3);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.3) blur(14px);-webkit-backdrop-filter:saturate(1.3) blur(14px);border-bottom:1px solid transparent;transition:border-color var(--dur-base) var(--ease-out)}
+.roles.stuck{border-bottom-color:var(--line)}
+.roles .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-2) var(--s-4)}
+.roles fieldset{display:flex;align-items:center;gap:var(--s-3);margin:0;padding:0;border:0;min-width:0;flex-wrap:wrap}
+.roles legend{float:left;font-size:14px;font-weight:800;color:var(--heading);padding:0}
+.seg{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:4px;border-radius:var(--r-full);background:var(--card);border:1px solid var(--line);box-shadow:var(--sh-sm)}
+.seg-thumb{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:var(--r-full);background:var(--brand);transition:transform var(--dur-slow) var(--ease-out),background-color var(--dur-base) var(--ease-out)}
+.seg[data-role="b"] .seg-thumb{transform:translateX(100%)}
+.seg[data-role="m"] .seg-thumb{transform:translateX(200%);background:var(--mgr)}
+.seg label{position:relative;z-index:var(--z-base);display:grid;place-items:center;min-height:44px;padding:0 var(--s-4);border-radius:var(--r-full);font-size:14.5px;font-weight:800;color:var(--ink-2);cursor:pointer;white-space:nowrap;transition:color var(--dur-base) var(--ease-out)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){color:var(--on-brand)}
+@media (prefers-color-scheme:dark){.seg[data-role="m"] label:has(input:checked){color:#0c1422}}
+.seg label:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.role-hint{margin:0;flex:1 1 280px;font-size:13.5px;color:var(--muted);line-height:1.4}
+.role-hint b{color:var(--heading)}
+@media (max-width:640px){
+  .roles legend{display:none}
+  .roles fieldset{flex:1 1 100%}
+  .seg{flex:1}
+  .seg label{padding:0 var(--s-2);font-size:14px}
+  .roles .role-hint{display:none}
+}
+.role-hint-m{display:none;margin:0 0 var(--s-4);padding:var(--s-3);border-radius:var(--r-md);background:var(--tint);font-size:13px;color:var(--ink-2);line-height:1.45}
+.role-hint-m b{color:var(--heading)}
+@media (max-width:640px){.role-hint-m{display:block}}
+
+/* ---------- окно портала ---------- */
+.portal-wrap{padding-block:var(--s-5) var(--s-8)}
+.portal{border-radius:var(--r-xl);background:var(--sand);border:1px solid var(--line);box-shadow:var(--sh-xl)}
+.chrome{display:flex;align-items:center;gap:var(--s-4);height:44px;padding:0 var(--s-4);border-radius:var(--r-xl) var(--r-xl) 0 0;background:var(--chrome);border-bottom:1px solid var(--line)}
+.chrome .dots{display:flex;gap:6px}
+.chrome .dots i{width:11px;height:11px;border-radius:50%;background:var(--chrome-dot)}
+.chrome .url{flex:1;max-width:420px;margin-inline:auto;display:flex;align-items:center;gap:6px;justify-content:center;height:28px;padding:0 var(--s-3);border-radius:var(--r-sm);background:var(--card);font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden}
+.chrome .spacer{width:45px}
+@media (max-width:480px){.chrome .dots,.chrome .spacer{display:none}}
+.app-head{display:flex;align-items:center;gap:var(--s-3);padding:var(--s-4) var(--s-5);border-bottom:1px solid var(--line);background:var(--card)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--heading)}
+.logo small{display:block;font-weight:600;font-size:12px;color:var(--muted);line-height:1.2}
+.user{margin-left:auto;display:flex;align-items:center;gap:10px;min-width:0;text-align:right}
+.user b{display:block;font-size:14px;color:var(--heading);line-height:1.25}
+.user small{display:block;font-size:12px;color:var(--muted);line-height:1.25}
+.u-ava{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:15px;background:var(--brand);color:var(--on-brand);transition:background-color var(--dur-base) var(--ease-out)}
+.is-mgr .u-ava{background:var(--mgr)}
+@media (prefers-color-scheme:dark){.is-mgr .u-ava{color:#0c1422}}
+@media (max-width:480px){.app-head{padding:var(--s-3) var(--s-4)}.logo small,.user small{display:none}}
+
+.portal-body{display:grid;gap:var(--s-5);padding:var(--s-5)}
+@media (min-width:1100px){.portal-body{grid-template-columns:minmax(0,1fr) 340px;align-items:start}}
+@media (max-width:480px){.portal-body{padding:var(--s-4) var(--s-3)}}
+.cat-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--s-2) var(--s-4);margin-bottom:var(--s-4)}
+.cat-head h2{margin:0;font-family:var(--display);font-weight:500;font-size:20px;letter-spacing:-.02em;color:var(--heading)}
+.example{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--r-full);background:var(--warning-tint);color:var(--warning);font-size:12px;font-weight:800;white-space:nowrap}
+.pricelist{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.pricelist b{color:var(--heading)}
+.cat-meta{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-3);align-items:center}
+
+/* перерисовываем сетку целиком; без этого привязка прокрутки в Safari уводит страницу на полтора экрана вниз */
+.grid{overflow-anchor:none;display:grid;gap:var(--s-4);grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr))}
+.grid.swap{animation:swap var(--dur-slow) var(--ease-out) both}
+@keyframes swap{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ---------- карточка товара ---------- */
+.prod{container-type:inline-size;border-radius:var(--r-lg);background:var(--card);border:1px solid var(--line);box-shadow:var(--sh-sm);transition:border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-base) var(--ease-out)}
+.prod:hover{border-color:var(--line-2);box-shadow:var(--sh-md)}
+.prod-in{display:grid;grid-template-rows:auto auto 1fr;gap:var(--s-4);padding:var(--s-4);height:100%}
+@container (min-width:340px){.prod-in{grid-template-columns:112px minmax(0,1fr);grid-template-rows:auto 1fr}}
+.prod-img{position:relative;display:grid;place-items:center;aspect-ratio:1;max-height:150px;width:100%;border-radius:var(--r-md);background:radial-gradient(80% 80% at 50% 35%,var(--card),var(--tint));overflow:hidden}
+@container (min-width:340px){.prod-img{max-height:none;align-self:start}}
+@container (max-width:339px){.prod-img{aspect-ratio:auto;height:130px}}
+.prod-img svg{width:min(100%,120px);height:auto}
+.f1{fill:var(--tone-1)}.f2{fill:var(--tone-2)}.f3{fill:var(--tone-3)}.f4{fill:var(--tone-4)}.fs{fill:var(--tone-shadow)}.fa{fill:var(--accent)}
+.badges{position:absolute;left:6px;top:6px;right:6px;display:flex;flex-wrap:wrap;gap:4px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border-radius:var(--r-full);font-size:11px;font-weight:800;line-height:1.2;white-space:nowrap}
+.badge.promo{background:var(--accent);color:var(--on-accent)}
+.badge.personal{background:var(--brand);color:var(--on-brand)}
+.prod-info{display:flex;flex-direction:column;gap:6px;min-width:0}
+.sku{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.prod h3{margin:0;font-size:16px;font-weight:800;line-height:1.3;color:var(--heading)}
+.price-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-top:2px}
+.price{font-family:var(--display);font-weight:500;font-size:22px;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+.price.is-promo{color:var(--accent)}
+.old{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.price-note{margin:0;font-size:12.5px;color:var(--muted);line-height:1.4}
+.price-note b{color:var(--ink-2)}
+.stock{display:flex;align-items:flex-start;gap:6px;margin:0;font-size:13px;font-weight:700;line-height:1.4}
+.stock::before{content:"";flex:none;width:8px;height:8px;margin-top:5px;border-radius:50%;background:currentColor}
+.stock.ok{color:var(--success)}.stock.low{color:var(--warning)}.stock.none{color:var(--muted)}
+.stock .in-cart{font-weight:600;color:var(--muted)}
+.buy{grid-column:1/-1;align-self:end;display:flex;flex-wrap:wrap;gap:var(--s-2)}
+.qty{display:flex;align-items:center;border-radius:var(--r-md);border:1.5px solid var(--line-2);background:var(--card);overflow:hidden}
+.qty button{display:grid;place-items:center;width:44px;height:44px;border:0;background:transparent;font-size:20px;font-weight:700;color:var(--heading);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out)}
+.qty button:hover:not(:disabled){background:var(--tint)}
+.qty button:disabled{color:var(--off-ink);cursor:not-allowed}
+.qty input{width:44px;height:44px;border:0;background:transparent;text-align:center;font-weight:800;font-variant-numeric:tabular-nums;-moz-appearance:textfield;appearance:textfield}
+.qty input::-webkit-inner-spin-button,.qty input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.qty input:focus-visible{outline:3px solid var(--accent);outline-offset:-3px;border-radius:0}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2);min-height:44px;padding:0 var(--s-4);border-radius:var(--r-md);border:1.5px solid transparent;text-decoration:none;font-weight:800;font-size:14.5px;line-height:1.2;cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform 100ms var(--ease-out)}
+.btn:active{transform:scale(.98)}
+.btn-wide{width:100%}
+.btn-grow{flex:1 1 auto}
+.btn-primary{background:var(--accent);color:var(--on-accent)}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-primary:disabled,.btn-brand:disabled{background:var(--off-bg);color:var(--off-ink);cursor:not-allowed;transform:none;filter:none}
+.btn-brand{background:var(--brand);color:var(--on-brand)}
+.btn-brand:hover{background:var(--brand-hover)}
+.btn-outline{background:transparent;border-color:var(--line-2);color:var(--heading)}
+.btn-outline:hover{border-color:var(--heading);background:var(--tint)}
+.btn-outline[aria-pressed="true"]{border-color:var(--success);color:var(--success);background:var(--success-tint)}
+.btn-ghost{background:var(--tint);color:var(--heading)}
+.btn-ghost:hover{background:var(--tint-2)}
+.btn-ghost:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-mgr{background:var(--mgr-tint);color:var(--mgr);border-color:transparent}
+.btn-mgr:hover{border-color:var(--mgr)}
+.btn.added{background:var(--success);color:var(--card)}
+.icon-x{display:grid;place-items:center;width:44px;height:44px;flex:none;border:0;border-radius:var(--r-sm);background:transparent;color:var(--muted);cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out)}
+.icon-x:hover{background:var(--accent-tint);color:var(--accent)}
+
+/* вид менеджера */
+.mgr-base{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-5);margin:2px 0 0}
+.mgr-base div{display:flex;gap:6px;align-items:baseline;font-size:13px}
+.mgr-base dt{color:var(--muted)}
+.mgr-base dd{margin:0;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.mgr-base .cost dd{color:var(--mgr)}
+.by-client{grid-column:1/-1;width:100%;border-collapse:collapse;font-size:13.5px;margin-top:calc(-1 * var(--s-2))}
+.by-client caption{caption-side:top;padding:6px 10px;margin-bottom:4px;border-radius:var(--r-sm);background:var(--mgr-tint);color:var(--mgr);font-size:12px;font-weight:800;text-align:left}
+.by-client caption svg{vertical-align:-2px;margin-right:6px}
+.by-client th[scope="row"],.by-client td:last-child{width:1%}
+.prod-in:has(.by-client){grid-template-rows:auto auto auto 1fr}
+@container (min-width:340px){.prod-in:has(.by-client){grid-template-rows:auto auto 1fr}}
+.by-client th,.by-client td{padding:7px 0;border-top:1px solid var(--line);text-align:left;vertical-align:top}
+.by-client th{font-weight:700;color:var(--ink-2);padding-right:var(--s-2);white-space:nowrap}
+.by-client td{font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.by-client td small{display:block;font-weight:600;color:var(--muted);font-size:11.5px}
+.by-client td:last-child{text-align:right;padding-left:var(--s-2)}
+.margin{display:inline-block;padding:2px 7px;border-radius:var(--r-full);font-size:11.5px;font-weight:800;white-space:nowrap}
+.margin.good{background:var(--success-tint);color:var(--success)}
+.margin.mid{background:var(--warning-tint);color:var(--warning)}
+.margin.bad{background:var(--accent-tint);color:var(--accent)}
+
+/* ---------- боковая панель: заказ / заказы дилеров ---------- */
+.side{border-radius:var(--r-lg);background:var(--card);border:1px solid var(--line);box-shadow:var(--sh-sm);scroll-margin-top:calc(var(--bar-h) + var(--roles-h) + var(--s-3))}
+@media (min-width:1100px){.side{position:sticky;top:calc(var(--bar-h) + var(--roles-h) + var(--s-4))}}
+.side-in{padding:var(--s-4) var(--s-5) var(--s-5)}
+@media (max-width:480px){.side-in{padding:var(--s-4)}}
+.side-head{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s-3);margin-bottom:var(--s-3)}
+.side h3:focus{outline:none}
+.side h3{margin:0;font-family:var(--display);font-weight:500;font-size:18px;letter-spacing:-.02em;color:var(--heading)}
+.side h4{margin:var(--s-5) 0 var(--s-2);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.side-head span{font-size:13px;color:var(--muted)}
+.empty{margin:0;padding:var(--s-4);border-radius:var(--r-md);border:1px dashed var(--line-2);font-size:13.5px;color:var(--muted);text-align:center}
+.lines{display:grid;margin:0;padding:0;list-style:none}
+.line{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:var(--s-2);align-items:center;padding:var(--s-2) 0;border-bottom:1px solid var(--line)}
+.line.in{animation:line-in var(--dur-slow) var(--ease-out) both}
+@keyframes line-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.line b{display:block;font-size:14px;color:var(--heading);line-height:1.3}
+.line small{display:block;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.line .sum{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.totals{display:grid;gap:4px;margin:var(--s-3) 0 var(--s-4)}
+.totals div{display:flex;justify-content:space-between;gap:var(--s-3);font-size:13.5px}
+.totals dt{color:var(--muted)}
+.totals dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
+.totals .save dd{color:var(--success)}
+.totals .grand{margin-top:4px;padding-top:var(--s-2);border-top:1px dashed var(--line-2);font-size:16px}
+.totals .grand dt{color:var(--heading);font-weight:800}
+.totals .grand dd{font-family:var(--display);font-weight:500;font-size:20px;color:var(--ink)}
+#checkout{margin-top:var(--s-4)}
+.fine{margin:var(--s-2) 0 0;font-size:12px;color:var(--muted);text-align:center}
+.orders{display:grid;gap:var(--s-2);margin:0;padding:0;list-style:none}
+.order{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px var(--s-3);padding:10px 12px;border-radius:var(--r-md);background:var(--sand);border:1px solid var(--line);font-size:13px}
+.order.in{animation:line-in var(--dur-slow) var(--ease-out) both}
+.order b{color:var(--heading);font-variant-numeric:tabular-nums}
+.order small{grid-column:1;color:var(--muted);font-variant-numeric:tabular-nums}
+.order .st{grid-row:1 / span 2;grid-column:2;align-self:center}
+.st{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:var(--r-full);font-size:11.5px;font-weight:800;white-space:nowrap;transition:background-color var(--dur-slow) var(--ease-out),color var(--dur-slow) var(--ease-out)}
+.st::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.st.new{background:var(--tint);color:var(--heading)}
+.st.sent{background:var(--warning-tint);color:var(--warning)}
+.st.sent::before{animation:blink 1s var(--ease-in-out) infinite}
+.st.ok{background:var(--success-tint);color:var(--success)}
+@keyframes blink{50%{opacity:.3}}
+.mgr-note{display:flex;gap:var(--s-2);margin:var(--s-4) 0 0;padding:var(--s-3);border-radius:var(--r-md);background:var(--mgr-tint);color:var(--ink-2);font-size:12.5px;line-height:1.45}
+.mgr-note svg{flex:none;color:var(--mgr);margin-top:1px}
+
+/* мобильная плашка заказа */
+/* фиксированная: появляется, пока портал на экране, а блок «Заказ» ещё нет */
+.cartbar{position:fixed;left:var(--s-3);right:var(--s-3);bottom:var(--s-3);z-index:var(--z-cartbar);display:flex;opacity:0;transform:translateY(calc(100% + var(--s-3)));pointer-events:none;transition:opacity var(--dur-base) var(--ease-in),transform var(--dur-base) var(--ease-in);align-items:center;justify-content:space-between;gap:var(--s-3);padding:var(--s-2) var(--s-2) var(--s-2) var(--s-4);border-radius:var(--r-lg);background:var(--brand);color:var(--on-brand);box-shadow:var(--sh-lg);font-size:14px}
+.cartbar.show{opacity:1;transform:none;pointer-events:auto;transition-timing-function:var(--ease-out)}
+.cartbar b{font-variant-numeric:tabular-nums}
+.cartbar .btn{background:var(--card);color:var(--heading);flex:none}
+@media (min-width:1100px){.cartbar{display:none}}
+
+/* ---------- окно «изменить цену» ---------- */
+dialog{width:min(440px,calc(100% - 24px));max-height:calc(100% - 24px);padding:0;border:0;border-radius:var(--r-xl);background:var(--card);color:var(--ink);box-shadow:var(--sh-xl)}
+dialog[open]{animation:pop var(--dur-slow) var(--ease-out) both}
+dialog::backdrop{background:rgba(8,14,26,.5);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+dialog.leaving{animation:pop-out var(--dur-base) var(--ease-in) both}
+@keyframes pop{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes pop-out{to{opacity:0;transform:translateY(8px) scale(.98)}}
+.dlg{padding:var(--s-5)}
+.dlg header{display:flex;align-items:flex-start;gap:var(--s-3);margin-bottom:var(--s-4)}
+.dlg h2{margin:0;font-family:var(--display);font-weight:500;font-size:20px;letter-spacing:-.02em;color:var(--heading)}
+.dlg header p{margin:4px 0 0;font-size:13.5px;color:var(--muted)}
+.dlg header .icon-x{margin:-8px -8px 0 auto}
+.dlg fieldset{margin:0 0 var(--s-4);padding:0;border:0}
+.dlg legend,.dlg label.lbl{display:block;margin-bottom:6px;padding:0;font-size:13px;font-weight:800;color:var(--ink-2)}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-2)}
+.pick label{position:relative;display:grid;place-items:center;min-height:44px;border-radius:var(--r-md);border:1.5px solid var(--line-2);font-weight:800;font-size:14px;cursor:pointer;transition:border-color var(--dur-fast) var(--ease-out),background-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out)}
+.pick input{position:absolute;opacity:0;pointer-events:none}
+.pick label:has(input:checked){border-color:var(--brand);background:var(--brand);color:var(--on-brand)}
+.pick label:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.money{position:relative}
+.money input{width:100%;height:52px;padding:0 40px 0 14px;border-radius:var(--r-md);border:1.5px solid var(--line-2);background:var(--sand);font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink);-moz-appearance:textfield;appearance:textfield;transition:border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out)}
+.money input::-webkit-inner-spin-button,.money input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.money input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--tint-2)}
+.money input[aria-invalid="true"]{border-color:var(--accent)}
+.money span{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-weight:800;color:var(--muted)}
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-2);margin:var(--s-4) 0}
+.calc div{padding:10px 12px;border-radius:var(--r-md);background:var(--sand);border:1px solid var(--line)}
+.calc dt{font-size:12px;color:var(--muted)}
+.calc dd{margin:2px 0 0;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink)}
+.calc .hl{background:var(--mgr-tint);border-color:transparent}
+.calc .hl dd{color:var(--mgr)}
+.warn{margin:0 0 var(--s-4);padding:10px 12px;border-radius:var(--r-md);background:var(--accent-tint);color:var(--accent);font-size:13px;font-weight:700}
+.warn:empty{display:none}
+.dlg-actions{display:flex;flex-wrap:wrap;gap:var(--s-2);justify-content:flex-end}
+.dlg-actions .btn{flex:1 1 140px}
+
+/* ---------- уведомление ---------- */
+.toast{position:fixed;left:50%;bottom:var(--s-5);z-index:var(--z-toast);display:flex;align-items:center;gap:var(--s-3);width:max-content;max-width:calc(100% - 24px);padding:var(--s-3) var(--s-3) var(--s-3) var(--s-4);border-radius:var(--r-md);background:var(--ink);color:var(--bg);font-size:14px;font-weight:600;line-height:1.4;box-shadow:var(--sh-lg);opacity:0;transform:translate(-50%,16px);pointer-events:none;transition:opacity var(--dur-base) var(--ease-in),transform var(--dur-base) var(--ease-in)}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto;transition-timing-function:var(--ease-out)}
+.toast .btn{flex:none;min-height:40px;background:var(--bg);color:var(--ink);font-size:13.5px}
+.toast .btn[hidden]{display:none}
+
+/* ---------- схема обмена с 1С ---------- */
+.flow{padding-bottom:var(--s-8)}
+.flow-head{display:grid;gap:var(--s-3) var(--s-8);margin-bottom:var(--s-6)}
+@media (min-width:900px){.flow-head{grid-template-columns:1fr 1fr;align-items:end}}
+.flow-head h2{margin:0;font-family:var(--display);font-weight:500;font-size:clamp(22px,3vw,34px);letter-spacing:-.025em;line-height:1.15;color:var(--heading)}
+.flow-head p{margin:0;color:var(--ink-2)}
+.flow-fig{margin:0;padding:clamp(16px,3vw,40px);border-radius:var(--r-xl);background:var(--card);border:1px solid var(--line);box-shadow:var(--sh-md)}
+.flow-fig svg{display:block;width:100%;height:auto;font-family:var(--text)}
+.flow-fig .flow-v{display:none;max-width:420px;margin-inline:auto}
+@media (max-width:759px){.flow-fig .flow-h{display:none}.flow-fig .flow-v{display:block}}
+.n-box{fill:var(--sand);stroke:var(--line-2);stroke-width:1.5}
+.n-box.c1{fill:var(--brand);stroke:none}
+.n-title{font-family:var(--display);font-weight:700;fill:var(--heading);text-anchor:middle}
+.c1-title{fill:var(--on-brand)}
+.n-sub{font-size:14px;font-weight:600;fill:var(--muted);text-anchor:middle}
+.c1-sub{fill:var(--on-brand);opacity:.78}
+.f-line{fill:none;stroke:var(--line-2);stroke-width:2.5;stroke-linecap:round;transition:stroke var(--dur-slow) var(--ease-out)}
+.f-line.hot{stroke:var(--accent)}
+.f-head{fill:var(--line-2);transition:fill var(--dur-slow) var(--ease-out)}
+.f-head.hot{fill:var(--accent)}
+.f-label{font-size:15px;font-weight:800;fill:var(--ink-2)}
+.f-label.mid{text-anchor:middle}
+.f-label.end{text-anchor:end}
+.f-dot{fill:var(--accent);animation:flow var(--dur-flow) var(--ease-in-out) infinite}
+.f-dot.late{animation-delay:calc(var(--dur-flow) / 2)}
+@keyframes flow{0%{transform:translate(0,0);opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translate(var(--dx,0),var(--dy,0));opacity:0}}
+.r-line{fill:none;stroke:var(--line-2);stroke-width:2;stroke-dasharray:2 6;stroke-linecap:round}
+.r-pill{fill:var(--card);stroke:var(--line-2);stroke-width:1.5}
+.r-text{font-size:16px;font-weight:800;fill:var(--heading);text-anchor:middle}
+.r-dot{fill:var(--accent)}
+.flow-log{display:flex;align-items:center;gap:var(--s-2);min-height:44px;margin:var(--s-4) 0 0;font-size:14px;color:var(--muted);justify-content:center;text-align:center}
+.flow-log b{color:var(--heading)}
+
+.who-grid{list-style:none;margin:var(--s-6) 0 0;padding:0;display:grid;gap:var(--s-4)}
+@media (min-width:760px){.who-grid{grid-template-columns:repeat(3,1fr)}}
+.who-card{padding:var(--s-5);border-radius:var(--r-lg);background:var(--card);border:1px solid var(--line)}
+.who-card .ic{width:44px;height:44px;margin-bottom:var(--s-3);border-radius:var(--r-md);display:grid;place-items:center;background:var(--tint);color:var(--heading)}
+.who-card:nth-child(2) .ic{background:var(--mgr-tint);color:var(--mgr)}
+.who-card:nth-child(3) .ic{background:var(--accent-tint);color:var(--accent)}
+.who-card h3{margin:0 0 6px;font-size:16px;font-weight:800;color:var(--heading)}
+.who-card p{margin:0;font-size:14px;color:var(--ink-2)}
+
+/* ---------- призыв ---------- */
+.cta{position:relative;isolation:isolate;overflow:hidden;display:grid;gap:var(--s-5);align-items:center;margin-bottom:var(--s-8);padding:clamp(24px,5vw,56px);border-radius:var(--r-xl);background:var(--navy);color:var(--on-dark)}
+.cta::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(70% 120% at 100% 120%,rgba(192,18,63,.4),transparent 65%),radial-gradient(40% 60% at 0% 0%,rgba(80,120,190,.25),transparent 70%)}
+@media (min-width:860px){.cta{grid-template-columns:1fr auto}}
+.cta h2{margin:0 0 var(--s-2);font-family:var(--display);font-weight:500;font-size:clamp(22px,3vw,34px);line-height:1.15;letter-spacing:-.025em}
+.cta p{margin:0;color:var(--on-dark-2);font-size:16px}
+.cta p b{color:var(--on-dark)}
+.cta .btn{min-height:56px;padding:0 var(--s-6);background:var(--crimson);color:var(--on-dark);font-size:16px}
+.cta .btn:hover{filter:brightness(1.08)}
+.cta .btn:focus-visible{outline-color:var(--crimson-on-dark)}
+.cta .arrow{transition:transform var(--dur-fast) var(--ease-out)}
+.cta .btn:hover .arrow{transform:translateX(3px)}
+.foot{padding:0 0 var(--s-6);font-size:13.5px;color:var(--muted)}
+.foot a{display:inline-flex;align-items:center;min-height:44px;font-weight:700;color:var(--heading)}
+
+.rise{animation:rise 700ms var(--ease-out) both}
+.rise-2{animation-delay:90ms}.rise-3{animation-delay:180ms}.rise-4{animation-delay:270ms}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .f-dot{opacity:0}
+}
+</style>
+</head>
+<body>
+
+<div class="demo-bar" id="demoBar" role="region" aria-label="Предупреждение о демо">
+  <div class="wrap">
+    <p><span class="demo-tag">Демо</span><span class="long">Демо: компания, товары, цены и&nbsp;заказы учебные&nbsp;— ничего никуда не&nbsp;уходит.</span><span class="short">Демо: данные учебные, ничего никуда не&nbsp;уходит.</span></p>
+    <a class="back-link" href="../../"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span><span class="long">Вернуться </span>в&nbsp;справочник</span></a>
+  </div>
+</div>
+
+<header class="intro wrap">
+  <div class="rise">
+    <span class="eyebrow">Демо · B2B-портал</span>
+    <h1>Портал для оптовой компании&nbsp;— <em>у&nbsp;каждого свой</em></h1>
+  </div>
+  <p class="lead rise rise-2">Один каталог, но&nbsp;у&nbsp;каждого дилера свои цены и&nbsp;акции, а&nbsp;менеджер видит закупку и&nbsp;маржу. <b>Переключите роль</b>, положите товар в&nbsp;заказ и&nbsp;оформите его&nbsp;— посмотрите, как заказ уходит в&nbsp;1С.</p>
+</header>
+
+<div class="roles rise rise-3" id="roles">
+  <div class="wrap">
+    <fieldset>
+      <legend>Войти как:</legend>
+      <div class="seg" id="seg" data-role="a">
+        <span class="seg-thumb" aria-hidden="true"></span>
+        <label><input type="radio" name="role" value="a" checked>Дилер А</label>
+        <label><input type="radio" name="role" value="b">Дилер Б</label>
+        <label><input type="radio" name="role" value="m">Менеджер</label>
+      </div>
+    </fieldset>
+    <p class="role-hint" id="roleHint" aria-live="polite"></p>
+  </div>
+</div>
+
+<main class="wrap portal-wrap rise rise-4" id="main">
+  <div class="portal" id="portal">
+    <div class="chrome" aria-hidden="true">
+      <span class="dots"><i></i><i></i><i></i></span>
+      <span class="url"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>portal.example/catalog</span>
+      <span class="spacer"></span>
+    </div>
+    <div class="app-head">
+      <span class="logo"><svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="var(--brand)"/><path d="M11 27V13h9a5 5 0 0 1 0 10h-9" fill="none" stroke="var(--on-brand)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="28" cy="27" r="3" fill="var(--crimson-on-dark)"/></svg><span>Портал-образец<small>оптовый кабинет · демо</small></span></span>
+      <span class="user"><span><b id="userName">Дилер А</b><small id="userOrg"></small></span><span class="u-ava" id="userAva" aria-hidden="true">А</span></span>
+    </div>
+    <div class="portal-body">
+      <section aria-labelledby="catTitle">
+        <p class="role-hint-m" id="roleHintM" aria-live="polite"></p>
+        <div class="cat-head">
+          <h2 id="catTitle">Каталог</h2>
+          <div class="cat-meta"><span class="pricelist" id="priceList"></span><span class="example">Цены — для примера</span></div>
+        </div>
+        <div class="grid" id="grid"></div>
+      </section>
+      <div class="cartbar" id="cartbar" aria-hidden="true"><span id="cartbarText"></span><a class="btn" href="#side" tabindex="-1">К&nbsp;заказу</a></div>
+      <aside class="side" id="side" aria-labelledby="sideTitle"><div class="side-in" id="sideIn"></div></aside>
+    </div>
+  </div>
+</main>
+
+<section class="wrap flow" aria-labelledby="flowTitle">
+  <div class="flow-head">
+    <h2 id="flowTitle">Портал и&nbsp;1С работают как одно целое</h2>
+    <p>1С остаётся главной: портал сам берёт оттуда остатки, цены и&nbsp;клиентов, а&nbsp;заказы и&nbsp;их&nbsp;статусы отдаёт обратно. Никто ничего не&nbsp;переносит руками.</p>
+  </div>
+  <figure class="flow-fig">
+    <svg class="flow-h" viewBox="0 0 1000 340" role="img" aria-labelledby="flowDesc">
+      <title id="flowDesc">Схема: из&nbsp;1С в&nbsp;портал идут остатки, цены и&nbsp;клиенты; из&nbsp;портала в&nbsp;1С&nbsp;— заказы и&nbsp;статусы. С&nbsp;порталом работают дилер, менеджер и&nbsp;администратор.</title>
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" class="f-head"/></marker>
+      </defs>
+      <rect class="n-box c1" x="20" y="90" width="240" height="160" rx="22"/>
+      <text class="n-title c1-title" x="140" y="172" font-size="48">1С</text>
+      <text class="n-sub c1-sub" x="140" y="210">учёт, склад, цены</text>
+
+      <g data-arrow="down">
+        <path class="f-line" d="M276 145H500" marker-end="url(#ah)"/>
+        <text class="f-label mid" x="388" y="124">остатки · цены · клиенты</text>
+        <circle class="f-dot" cx="280" cy="145" r="6" style="--dx:216px"/>
+      </g>
+      <g data-arrow="up">
+        <path class="f-line" d="M504 200H280" marker-end="url(#ah)"/>
+        <text class="f-label mid" x="388" y="234">заказы · статусы</text>
+        <circle class="f-dot late" cx="500" cy="200" r="6" style="--dx:-216px"/>
+      </g>
+
+      <rect class="n-box" x="520" y="90" width="240" height="160" rx="22"/>
+      <text class="n-title" x="640" y="168" font-size="30">Портал</text>
+      <text class="n-sub" x="640" y="204">каталог и&nbsp;заказы</text>
+
+      <path class="r-line" d="M760 170C800 170 790 74 822 74"/>
+      <path class="r-line" d="M760 170H822"/>
+      <path class="r-line" d="M760 170C800 170 790 266 822 266"/>
+      <rect class="r-pill" x="822" y="48" width="160" height="52" rx="26"/><text class="r-text" x="902" y="80">Дилер</text>
+      <rect class="r-pill" x="822" y="144" width="160" height="52" rx="26"/><text class="r-text" x="902" y="176">Менеджер</text>
+      <rect class="r-pill" x="822" y="240" width="160" height="52" rx="26"/><text class="r-text" x="902" y="272" font-size="15">Администратор</text>
+      <circle class="r-dot" cx="760" cy="170" r="5"/>
+    </svg>
+
+    <svg class="flow-v" viewBox="0 0 340 560" role="img" aria-labelledby="flowDescV">
+      <title id="flowDescV">Схема: из&nbsp;1С в&nbsp;портал идут остатки, цены и&nbsp;клиенты; из&nbsp;портала в&nbsp;1С&nbsp;— заказы и&nbsp;статусы. С&nbsp;порталом работают дилер, менеджер и&nbsp;администратор.</title>
+      <defs>
+        <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" class="f-head"/></marker>
+      </defs>
+      <rect class="n-box c1" x="70" y="10" width="200" height="100" rx="20"/>
+      <text class="n-title c1-title" x="170" y="62" font-size="36">1С</text>
+      <text class="n-sub c1-sub" x="170" y="92">учёт, склад, цены</text>
+
+      <g data-arrow="down">
+        <path class="f-line" d="M130 122V222" marker-end="url(#ahv)"/>
+        <text class="f-label end" x="116" y="156">остатки</text>
+        <text class="f-label end" x="116" y="176">цены</text>
+        <text class="f-label end" x="116" y="196">клиенты</text>
+        <circle class="f-dot" cx="130" cy="124" r="6" style="--dy:94px"/>
+      </g>
+      <g data-arrow="up">
+        <path class="f-line" d="M210 226V126" marker-end="url(#ahv)"/>
+        <text class="f-label" x="226" y="166">заказы</text>
+        <text class="f-label" x="226" y="186">статусы</text>
+        <circle class="f-dot late" cx="210" cy="222" r="6" style="--dy:-94px"/>
+      </g>
+
+      <rect class="n-box" x="70" y="238" width="200" height="100" rx="20"/>
+      <text class="n-title" x="170" y="284" font-size="26">Портал</text>
+      <text class="n-sub" x="170" y="314">каталог и&nbsp;заказы</text>
+
+      <path class="r-line" d="M170 338V530"/>
+      <rect class="r-pill" x="60" y="372" width="220" height="46" rx="23"/><text class="r-text" x="170" y="401">Дилер</text>
+      <rect class="r-pill" x="60" y="428" width="220" height="46" rx="23"/><text class="r-text" x="170" y="457">Менеджер</text>
+      <rect class="r-pill" x="60" y="484" width="220" height="46" rx="23"/><text class="r-text" x="170" y="513">Администратор</text>
+    </svg>
+    <figcaption class="flow-log" id="flowLog" aria-live="polite">Оформите заказ в&nbsp;портале выше&nbsp;— и&nbsp;посмотрите, как он&nbsp;пойдёт по&nbsp;схеме.</figcaption>
+  </figure>
+
+  <ul class="who-grid">
+    <li class="who-card">
+      <span class="ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg></span>
+      <h3>Дилер</h3>
+      <p>Свой каталог с&nbsp;персональными ценами и&nbsp;акциями, остатки, корзина, заказы и&nbsp;их&nbsp;статусы. Чужих цен не&nbsp;видит.</p>
+    </li>
+    <li class="who-card">
+      <span class="ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 3 5-6"/></svg></span>
+      <h3>Менеджер</h3>
+      <p>Свои клиенты, их&nbsp;цены и&nbsp;маржа, заказы дилеров. Может поменять цену конкретному клиенту&nbsp;— в&nbsp;пределах правил.</p>
+    </li>
+    <li class="who-card">
+      <span class="ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span>
+      <h3>Администратор</h3>
+      <p>Пользователи и&nbsp;права, настройки обмена с&nbsp;1С, журнал: кто, что и&nbsp;когда менял.</p>
+    </li>
+  </ul>
+</section>
+
+<section class="wrap" aria-labelledby="cta-title">
+  <div class="cta">
+    <div>
+      <h2 id="cta-title">Делаю такие порталы и&nbsp;интеграцию с&nbsp;1С</h2>
+      <p>Расскажите, как устроены продажи у&nbsp;вас&nbsp;— подскажу, с&nbsp;чего начать. <b>Консультация и&nbsp;разбор&nbsp;— бесплатно.</b></p>
+    </div>
+    <a class="btn" href="../../#dev">Обсудить с&nbsp;Романом <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+  <p class="foot">Демо-страница. Компания, товары, цены и&nbsp;заказы учебные. <a href="../../">← Справочник соседей ЖК&nbsp;«Аура»</a></p>
+</section>
+
+<dialog id="priceDlg" aria-labelledby="dlgTitle">
+  <form class="dlg" id="priceForm" novalidate>
+    <header>
+      <div><h2 id="dlgTitle">Цена для клиента</h2><p id="dlgProd"></p></div>
+      <button class="icon-x" type="button" id="dlgClose" aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </header>
+    <fieldset>
+      <legend>Клиент</legend>
+      <div class="pick" id="dlgClients">
+        <label><input type="radio" name="client" value="a">Дилер А</label>
+        <label><input type="radio" name="client" value="b">Дилер Б</label>
+      </div>
+    </fieldset>
+    <label class="lbl" for="newPrice">Новая цена до&nbsp;акций</label>
+    <div class="money"><input id="newPrice" type="number" inputmode="numeric" min="1" step="10" aria-describedby="dlgWarn"><span aria-hidden="true">₽</span></div>
+    <dl class="calc">
+      <div><dt>Базовая</dt><dd id="cBase"></dd></div>
+      <div><dt>Сейчас у&nbsp;клиента</dt><dd id="cNow"></dd></div>
+      <div><dt>Закупка</dt><dd id="cCost"></dd></div>
+      <div class="hl"><dt>Маржа с&nbsp;новой ценой</dt><dd id="cMargin" aria-live="polite"></dd></div>
+    </dl>
+    <p class="warn" id="dlgWarn"></p>
+    <div class="dlg-actions">
+      <button class="btn btn-ghost" type="button" id="dlgReset">Вернуть прайс</button>
+      <button class="btn btn-brand" type="submit" id="dlgSave">Сохранить</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button class="btn" type="button" id="toastAction" hidden></button></div>
+
+<script>
+(() => {
+  "use strict";
+
+  const PRICE_ROUND = 10;
+  const SENT_AFTER_MS = 700;
+  const ACCEPTED_AFTER_MS = 2400;
+  const TOAST_MS = 6000;
+  const LOW_STOCK = 10;
+  const MARGIN_GOOD = 20;
+  const MARGIN_MID = 10;
+  const ADDED_FLASH_MS = 1200;
+
+  const PRODUCTS = [
+    { sku: "0001", name: "Товар-образец «Куб»", base: 1000, cost: 620, stock: 48, shape: "cube" },
+    { sku: "0002", name: "Товар-образец «Цилиндр»", base: 2400, cost: 1500, stock: 12, shape: "cyl" },
+    { sku: "0003", name: "Товар-образец «Призма»", base: 750, cost: 430, stock: 0, shape: "prism", incoming: "ожидается через 5 дней" },
+    { sku: "0004", name: "Товар-образец «Сфера»", base: 5200, cost: 3300, stock: 5, shape: "sphere" },
+  ];
+  const CLIENTS = {
+    a: { name: "Дилер А", short: "А", org: "учебная компания", discount: 15, promos: { "0002": 10 } },
+    b: { name: "Дилер Б", short: "Б", org: "учебная компания", discount: 10, promos: { "0004": 12, "0001": 5 } },
+  };
+  const ROLE_HINTS = {
+    a: "<b>Дилер А</b> видит свой прайс (−15% от базовой) и свою акцию. Закупки и маржи у него на экране нет.",
+    b: "<b>Дилер Б</b> — тот же каталог, но другой прайс (−10%) и другие акции.",
+    m: "<b>Менеджер</b> видит закупку, маржу и цены каждого дилера — и может поменять цену конкретному клиенту.",
+  };
+  const STATUS = { new: "Новый", sent: "Передаётся в 1С", ok: "Принят 1С" };
+
+  const $ = (id) => document.getElementById(id);
+  const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const fmt = (n) => Math.round(n).toLocaleString("ru-RU") + " ₽";
+  const plural = (n, one, few, many) => {
+    const a = n % 10, b = n % 100;
+    return a === 1 && b !== 11 ? one : a >= 2 && a <= 4 && (b < 12 || b > 14) ? few : many;
+  };
+  const roundTo = (n, step) => Math.round(n / step) * step;
+  const bySku = (sku) => PRODUCTS.find((p) => p.sku === sku);
+  const promoEnd = (() => {
+    const d = new Date();
+    const last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+    return `${String(last.getDate()).padStart(2, "0")}.${String(last.getMonth() + 1).padStart(2, "0")}`;
+  })();
+
+  const state = {
+    role: "a",
+    overrides: { a: {}, b: {} },
+    carts: { a: {}, b: {} },
+    subs: { a: new Set(), b: new Set() },
+    stock: Object.fromEntries(PRODUCTS.map((p) => [p.sku, p.stock])),
+    orders: [],
+    orderSeq: 0,
+  };
+
+  // ---------- цены ----------
+  const listPrice = (c, p) => state.overrides[c][p.sku] ?? roundTo(p.base * (1 - CLIENTS[c].discount / 100), PRICE_ROUND);
+  const promoPct = (c, p) => CLIENTS[c].promos[p.sku] || 0;
+  const finalPrice = (c, p) => {
+    const pct = promoPct(c, p);
+    return pct ? Math.round(listPrice(c, p) * (1 - pct / 100)) : listPrice(c, p);
+  };
+  const marginPct = (price, cost) => Math.round(((price - cost) / price) * 100);
+  const marginClass = (m) => (m >= MARGIN_GOOD ? "good" : m >= MARGIN_MID ? "mid" : "bad");
+  const inCart = (c, sku) => state.carts[c][sku] || 0;
+
+  // ---------- иллюстрации товаров (не фото) ----------
+  const SHAPES = {
+    cube: '<ellipse class="fs" cx="60" cy="106" rx="34" ry="6"/><path class="f3" d="M60 18 100 40 60 62 20 40z"/><path class="f2" d="M20 40 60 62v42L20 82z"/><path class="f1" d="M100 40 60 62v42l40-22z"/><path class="fa" d="m72 74 16-9v8l-16 9z"/>',
+    cyl: '<ellipse class="fs" cx="60" cy="106" rx="32" ry="6"/><path class="f2" d="M30 34v58a30 11 0 0 0 60 0V34z"/><path class="f1" d="M60 45v58a30 11 0 0 0 30-11V34a30 11 0 0 1-30 11z"/><ellipse class="f3" cx="60" cy="34" rx="30" ry="11"/><path class="fa" d="M30 70a30 11 0 0 0 60 0v7a30 11 0 0 1-60 0z"/>',
+    prism: '<ellipse class="fs" cx="62" cy="104" rx="38" ry="6"/><path class="f1" d="M50 28 72 18l28 64-22 14z"/><path class="f3" d="M50 28 78 96H22z"/><path class="fa" d="M36 78h28l3 7H33z"/>',
+    sphere: '<ellipse class="fs" cx="60" cy="106" rx="30" ry="6"/><circle class="f1" cx="60" cy="60" r="36"/><path class="f2" d="M60 24a36 36 0 0 0 0 72 26 36 0 0 1 0-72z"/><circle class="f3" cx="47" cy="45" r="9" opacity=".75"/><path class="fa" d="M24.5 64a36 36 0 0 0 71 0 36 9 0 0 1-71 0z"/>',
+  };
+  const EYE_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const shapeSvg = (p) => `<svg viewBox="0 0 120 120" aria-hidden="true">${SHAPES[p.shape]}</svg>`;
+
+  // ---------- каталог ----------
+  function renderCatalog(animate) {
+    const grid = $("grid");
+    grid.innerHTML = PRODUCTS.map((p) => (state.role === "m" ? managerCard(p) : dealerCard(state.role, p))).join("");
+    if (animate && !reduceMotion()) {
+      grid.classList.remove("swap");
+      void grid.offsetWidth;
+      grid.classList.add("swap");
+    }
+    $("priceList").innerHTML = state.role === "m"
+      ? "Показаны цены <b>всех клиентов</b>"
+      : `Ваш прайс: <b>−${CLIENTS[state.role].discount}% от&nbsp;базовой</b>`;
+  }
+  function stockLine(p, c) {
+    const s = state.stock[p.sku];
+    const mine = c ? inCart(c, p.sku) : 0;
+    const cartTxt = mine ? ` <span class="in-cart">· в&nbsp;заказе ${mine}</span>` : "";
+    if (s === 0) return `<p class="stock none">Нет в&nbsp;наличии, ${p.incoming}</p>`;
+    if (s <= LOW_STOCK) return `<p class="stock low">Мало: ${s}&nbsp;шт${cartTxt}</p>`;
+    return `<p class="stock ok">В&nbsp;наличии: ${s}&nbsp;шт${cartTxt}</p>`;
+  }
+  function dealerCard(c, p) {
+    const pct = promoPct(c, p);
+    const isPersonal = p.sku in state.overrides[c];
+    const price = finalPrice(c, p);
+    const badges = [
+      pct ? `<span class="badge promo">−${pct}% до&nbsp;${promoEnd}</span>` : "",
+      isPersonal ? '<span class="badge personal">ваша цена</span>' : "",
+    ].join("");
+    const note = pct
+      ? `Акция −${pct}% к&nbsp;вашему прайсу, до&nbsp;${promoEnd}`
+      : isPersonal ? "Персональная цена от&nbsp;вашего менеджера" : `Ваш прайс: −${CLIENTS[c].discount}% от&nbsp;базовой`;
+    const left = state.stock[p.sku] - inCart(c, p.sku);
+    let buy;
+    if (state.stock[p.sku] === 0) {
+      const on = state.subs[c].has(p.sku);
+      buy = `<button class="btn btn-outline btn-grow" type="button" data-sub="${p.sku}" aria-pressed="${on}">${on ? "Сообщим о&nbsp;приходе" : "Сообщить о&nbsp;приходе"}</button>`;
+    } else if (left <= 0) {
+      buy = '<button class="btn btn-primary btn-grow" type="button" disabled>Весь остаток в&nbsp;заказе</button>';
+    } else {
+      buy = `<div class="qty" role="group" aria-label="Количество: ${p.name}">
+          <button type="button" data-dec aria-label="Меньше" disabled>−</button>
+          <input type="number" inputmode="numeric" min="1" max="${left}" value="1" aria-label="Количество, штук" data-qty>
+          <button type="button" data-inc aria-label="Больше" ${left <= 1 ? "disabled" : ""}>+</button>
+        </div>
+        <button class="btn btn-primary btn-grow" type="button" data-add="${p.sku}">В&nbsp;заказ</button>`;
+    }
+    return `<article class="prod" data-sku="${p.sku}" aria-labelledby="pn${p.sku}"><div class="prod-in">
+      <div class="prod-img">${shapeSvg(p)}<span class="badges">${badges}</span></div>
+      <div class="prod-info">
+        <span class="sku">арт. ${p.sku}</span>
+        <h3 id="pn${p.sku}">${p.name}</h3>
+        <div class="price-row"><span class="price${pct ? " is-promo" : ""}">${fmt(price)}</span><s class="old"><span class="sr-only">базовая цена </span>${fmt(p.base)}</s></div>
+        <p class="price-note">${note}</p>
+        ${stockLine(p, c)}
+      </div>
+      <div class="buy">${buy}</div></div></article>`;
+  }
+  function managerCard(p) {
+    const rows = Object.keys(CLIENTS).map((c) => {
+      const lp = listPrice(c, p);
+      const pct = promoPct(c, p);
+      const fin = finalPrice(c, p);
+      const m = marginPct(fin, p.cost);
+      const sub = [
+        p.sku in state.overrides[c] ? "персональная" : `прайс −${CLIENTS[c].discount}%`,
+        pct ? `акция −${pct}% → ${fmt(fin)}` : "",
+      ].filter(Boolean).join(" · ");
+      return `<tr><th scope="row">${CLIENTS[c].name}</th><td>${fmt(lp)}<small>${sub}</small></td><td><span class="margin ${marginClass(m)}">маржа ${m}%</span></td></tr>`;
+    }).join("");
+    return `<article class="prod" data-sku="${p.sku}" aria-labelledby="pn${p.sku}"><div class="prod-in">
+      <div class="prod-img">${shapeSvg(p)}</div>
+      <div class="prod-info">
+        <span class="sku">арт. ${p.sku}</span>
+        <h3 id="pn${p.sku}">${p.name}</h3>
+        <dl class="mgr-base"><div><dt>Базовая</dt><dd>${fmt(p.base)}</dd></div><div class="cost"><dt>Закупка</dt><dd>${fmt(p.cost)}</dd></div></dl>
+        ${stockLine(p, null)}
+      </div>
+      <table class="by-client"><caption>${EYE_SVG}Цены клиентов и маржа · видит только менеджер</caption>
+        <thead class="sr-only"><tr><th scope="col">Клиент</th><th scope="col">Цена</th><th scope="col">Маржа</th></tr></thead>
+        <tbody>${rows}</tbody></table>
+      <div class="buy"><button class="btn btn-mgr btn-grow" type="button" data-edit="${p.sku}">Изменить цену для клиента</button></div></div></article>`;
+  }
+
+  $("grid").addEventListener("click", (e) => {
+    const card = e.target.closest(".prod");
+    if (!card) return;
+    const p = bySku(card.dataset.sku);
+    const qtyInput = card.querySelector("[data-qty]");
+    if (e.target.closest("[data-inc]") || e.target.closest("[data-dec]")) {
+      const delta = e.target.closest("[data-inc]") ? 1 : -1;
+      setQty(card, Number(qtyInput.value) + delta);
+    } else if (e.target.closest("[data-add]")) {
+      addToCart(p, Number(qtyInput.value) || 1, e.target.closest("[data-add]"));
+    } else if (e.target.closest("[data-sub]")) {
+      const subs = state.subs[state.role];
+      subs.has(p.sku) ? subs.delete(p.sku) : subs.add(p.sku);
+      renderCatalog();
+      $("grid").querySelector(`[data-sku="${p.sku}"] [data-sub]`).focus();
+      if (subs.has(p.sku)) toast(`Как только ${p.name.replace("Товар-образец ", "")} поступит на склад, придёт письмо. В демо — понарошку.`);
+    } else if (e.target.closest("[data-edit]")) {
+      openPriceDialog(p);
+    }
+  });
+  $("grid").addEventListener("change", (e) => {
+    if (e.target.matches("[data-qty]")) setQty(e.target.closest(".prod"), Number(e.target.value));
+  });
+  function setQty(card, value) {
+    const input = card.querySelector("[data-qty]");
+    const max = Number(input.max);
+    const v = Math.min(max, Math.max(1, Math.round(value) || 1));
+    input.value = v;
+    card.querySelector("[data-dec]").disabled = v <= 1;
+    card.querySelector("[data-inc]").disabled = v >= max;
+  }
+  function addToCart(p, qty, btn) {
+    const c = state.role;
+    const left = state.stock[p.sku] - inCart(c, p.sku);
+    const add = Math.min(qty, left);
+    if (add <= 0) return;
+    state.carts[c][p.sku] = inCart(c, p.sku) + add;
+    renderCatalog();
+    renderSide(p.sku);
+    const again = $("grid").querySelector(`[data-sku="${p.sku}"] [data-add]`);
+    const target = again || $("grid").querySelector(`[data-sku="${p.sku}"] .buy .btn`);
+    if (target) {
+      target.focus({ preventScroll: true });
+      if (again) {
+        again.classList.add("added");
+        again.textContent = `Добавлено: ${add}`;
+        setTimeout(() => { if (again.isConnected) { again.classList.remove("added"); again.innerHTML = "В&nbsp;заказ"; } }, ADDED_FLASH_MS);
+      }
+    }
+  }
+
+  // ---------- боковая панель ----------
+  function renderSide(newSku) {
+    if (state.role === "m") return renderManagerSide();
+    const c = state.role;
+    const cart = state.carts[c];
+    const skus = Object.keys(cart);
+    const count = skus.reduce((s, k) => s + cart[k], 0);
+    const total = skus.reduce((s, k) => s + cart[k] * finalPrice(c, bySku(k)), 0);
+    const baseTotal = skus.reduce((s, k) => s + cart[k] * bySku(k).base, 0);
+    const lines = skus.map((k) => {
+      const p = bySku(k), price = finalPrice(c, p);
+      return `<li class="line${k === newSku ? " in" : ""}"><span><b>${p.name}</b><small>${cart[k]}&nbsp;×&nbsp;${fmt(price)}</small></span>
+        <span class="sum">${fmt(cart[k] * price)}</span>
+        <button class="icon-x" type="button" data-remove="${k}" aria-label="Убрать из заказа: ${p.name}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></li>`;
+    }).join("");
+    const myOrders = state.orders.filter((o) => o.client === c);
+    $("sideIn").innerHTML = `
+      <div class="side-head"><h3 id="sideTitle" tabindex="-1">Заказ</h3><span>${skus.length ? `${count}&nbsp;шт` : ""}</span></div>
+      ${skus.length ? `<ul class="lines">${lines}</ul>
+        <dl class="totals">
+          <div><dt>По&nbsp;базовым ценам</dt><dd><s>${fmt(baseTotal)}</s></dd></div>
+          <div class="save"><dt>Ваша выгода</dt><dd>−${fmt(baseTotal - total)}</dd></div>
+          <div class="grand"><dt>Итого</dt><dd>${fmt(total)}</dd></div>
+        </dl>` : '<p class="empty">Пока пусто. Нажмите «В&nbsp;заказ» у&nbsp;товара.</p>'}
+      <button class="btn btn-primary btn-wide" type="button" id="checkout" ${skus.length ? "" : "disabled"}>Оформить заказ</button>
+      <p class="fine">Заказ сам уйдёт в&nbsp;1С. В&nbsp;демо&nbsp;— имитация.</p>
+      ${myOrders.length ? `<h4>Мои заказы</h4><ul class="orders">${myOrders.map((o) => orderRow(o, false)).join("")}</ul>` : ""}`;
+    view.hasCart = skus.length > 0;
+    syncCartbar();
+    $("cartbarText").innerHTML = `В&nbsp;заказе <b>${count}&nbsp;шт</b> · <b>${fmt(total)}</b>`;
+  }
+  function renderManagerSide() {
+    view.hasCart = false;
+    syncCartbar();
+    $("sideIn").innerHTML = `
+      <div class="side-head"><h3 id="sideTitle">Заказы дилеров</h3><span>${state.orders.length || ""}</span></div>
+      ${state.orders.length ? `<ul class="orders">${state.orders.map((o) => orderRow(o, true)).join("")}</ul>`
+        : '<p class="empty">Пока нет. Войдите как дилер, оформите заказ&nbsp;— он&nbsp;появится здесь.</p>'}
+      <p class="mgr-note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span>Закупку, маржу и&nbsp;цены других клиентов видит только менеджер. Дилерам эти данные даже не&nbsp;отправляются.</span></p>`;
+  }
+  function orderRow(o, withClient) {
+    const n = o.lines.reduce((s, l) => s + l.qty, 0);
+    return `<li class="order${o.fresh ? " in" : ""}" data-order="${o.no}"><b>№&nbsp;${o.no}${withClient ? ` · ${CLIENTS[o.client].name}` : ""}</b>
+      <small>${n}&nbsp;шт · ${fmt(o.total)}</small><span class="st ${o.status}">${STATUS[o.status]}</span></li>`;
+  }
+  $("sideIn").addEventListener("click", (e) => {
+    const rm = e.target.closest("[data-remove]");
+    if (rm) {
+      delete state.carts[state.role][rm.dataset.remove];
+      renderSide();
+      renderCatalog();
+      ($("sideIn").querySelector("[data-remove]") || $("checkout")).focus();
+      return;
+    }
+    if (e.target.closest("#checkout")) checkout();
+  });
+
+  // мини-плашка заказа на телефоне: видна, пока портал на экране, а сам блок «Заказ» — ещё нет
+  const view = { hasCart: false, portalOn: false, sideOn: false };
+  function syncCartbar() {
+    const show = view.hasCart && view.portalOn && !view.sideOn;
+    const bar = $("cartbar");
+    bar.classList.toggle("show", show);
+    bar.setAttribute("aria-hidden", String(!show));
+    bar.querySelector("a").tabIndex = show ? 0 : -1;
+  }
+  new IntersectionObserver(([e]) => { view.portalOn = e.isIntersecting; syncCartbar(); }).observe($("grid"));
+  new IntersectionObserver(([e]) => { view.sideOn = e.isIntersecting; syncCartbar(); }, { threshold: 0.15 }).observe($("side"));
+
+  // ---------- оформление заказа и путь в 1С ----------
+  function checkout() {
+    const c = state.role;
+    const cart = state.carts[c];
+    const lines = Object.keys(cart).map((k) => ({ sku: k, qty: cart[k], price: finalPrice(c, bySku(k)) }));
+    if (!lines.length) return;
+    const order = {
+      no: `Д-${String(++state.orderSeq).padStart(4, "0")}`, client: c, lines,
+      total: lines.reduce((s, l) => s + l.qty * l.price, 0), status: "new", fresh: true,
+    };
+    state.orders.unshift(order);
+    state.carts[c] = {};
+    renderSide();
+    renderCatalog();
+    order.fresh = false;
+    $("sideTitle").focus({ preventScroll: true });
+    toast(`Заказ № ${order.no} оформлен на ${fmt(order.total)}. Дальше — смотрите схему обмена с 1С ниже.`);
+    setTimeout(() => {
+      setStatus(order, "sent");
+      pulse("up");
+      log(`Заказ <b>№&nbsp;${order.no}</b> передаётся из&nbsp;портала в&nbsp;1С…`);
+    }, SENT_AFTER_MS);
+    setTimeout(() => {
+      order.lines.forEach((l) => { state.stock[l.sku] = Math.max(0, state.stock[l.sku] - l.qty); });
+      setStatus(order, "ok");
+      pulse("down");
+      log(`1С приняла заказ <b>№&nbsp;${order.no}</b>, поставила резерв и&nbsp;прислала новые остатки.`);
+      renderCatalog();
+    }, ACCEPTED_AFTER_MS);
+  }
+  function setStatus(order, status) {
+    order.status = status;
+    const el = $("sideIn").querySelector(`[data-order="${order.no}"] .st`);
+    if (el) {
+      el.className = `st ${status}`;
+      el.textContent = STATUS[status];
+    }
+  }
+  function log(html) { $("flowLog").innerHTML = html; }
+  function pulse(dir) {
+    document.querySelectorAll(`[data-arrow="${dir}"]`).forEach((g) => {
+      const line = g.querySelector(".f-line");
+      line.classList.add("hot");
+      setTimeout(() => line.classList.remove("hot"), 1400);
+      if (reduceMotion()) return;
+      const src = g.querySelector(".f-dot");
+      const dot = src.cloneNode();
+      dot.classList.remove("f-dot", "late");
+      dot.setAttribute("r", "9");
+      dot.style.fill = "var(--accent)";
+      g.append(dot);
+      const cs = getComputedStyle(src);
+      const dx = cs.getPropertyValue("--dx").trim() || "0px";
+      const dy = cs.getPropertyValue("--dy").trim() || "0px";
+      dot.animate([
+        { transform: "translate(0,0)", opacity: 0 },
+        { opacity: 1, offset: .15 },
+        { transform: `translate(${dx},${dy})`, opacity: 0 },
+      ], { duration: 1100, easing: "cubic-bezier(.65,0,.35,1)" }).onfinish = () => dot.remove();
+    });
+  }
+
+  // ---------- окно «изменить цену» ----------
+  const dlg = $("priceDlg");
+  let dlgSku = null;
+  function openPriceDialog(p) {
+    dlgSku = p.sku;
+    $("dlgProd").textContent = `${p.name}, арт. ${p.sku}`;
+    $("cBase").textContent = fmt(p.base);
+    $("cCost").textContent = fmt(p.cost);
+    dlg.querySelector('input[name="client"][value="a"]').checked = true;
+    fillDialog();
+    dlg.showModal();
+    $("newPrice").focus();
+    $("newPrice").select();
+  }
+  function dlgClient() { return dlg.querySelector('input[name="client"]:checked').value; }
+  function fillDialog() {
+    const p = bySku(dlgSku), c = dlgClient();
+    $("newPrice").value = listPrice(c, p);
+    $("cNow").textContent = fmt(listPrice(c, p)) + (promoPct(c, p) ? ` (акция −${promoPct(c, p)}%)` : "");
+    $("dlgReset").disabled = !(p.sku in state.overrides[c]);
+    updateMargin();
+  }
+  function updateMargin() {
+    const p = bySku(dlgSku), c = dlgClient();
+    const v = Number($("newPrice").value);
+    const valid = v > 0;
+    const pct = promoPct(c, p);
+    const fin = pct ? Math.round(v * (1 - pct / 100)) : v;
+    const below = valid && fin <= p.cost;
+    $("cMargin").textContent = valid ? `${marginPct(fin, p.cost)}%${pct ? " с акцией" : ""}` : "—";
+    $("dlgWarn").textContent = !valid ? "Введите цену больше нуля."
+      : below ? `С такой ценой${pct ? " и акцией" : ""} продажа уйдёт в минус: ниже закупки. Портал не даст сохранить без согласования.` : "";
+    $("newPrice").setAttribute("aria-invalid", String(!valid || below));
+    $("dlgSave").disabled = !valid || below;
+  }
+  $("dlgClients").addEventListener("change", fillDialog);
+  $("newPrice").addEventListener("input", updateMargin);
+  $("priceForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if ($("dlgSave").disabled) return;
+    const p = bySku(dlgSku), c = dlgClient();
+    const v = Math.round(Number($("newPrice").value));
+    const listDefault = roundTo(p.base * (1 - CLIENTS[c].discount / 100), PRICE_ROUND);
+    if (v === listDefault) delete state.overrides[c][p.sku];
+    else state.overrides[c][p.sku] = v;
+    closeDialog();
+    renderCatalog();
+    toast(`${CLIENTS[c].name} теперь видит ${p.name.replace("Товар-образец ", "")} по ${fmt(finalPrice(c, p))}.`, {
+      label: `Войти как ${CLIENTS[c].name}`, run: () => setRole(c),
+    });
+  });
+  $("dlgReset").addEventListener("click", () => {
+    const p = bySku(dlgSku), c = dlgClient();
+    delete state.overrides[c][p.sku];
+    closeDialog();
+    renderCatalog();
+    toast(`Для ${c === "a" ? "Дилера А" : "Дилера Б"} снова действует общий прайс.`);
+  });
+  $("dlgClose").addEventListener("click", closeDialog);
+  dlg.addEventListener("cancel", (e) => { e.preventDefault(); closeDialog(); });
+  dlg.addEventListener("click", (e) => { if (e.target === dlg) closeDialog(); });
+  function closeDialog() {
+    if (!dlg.open) return;
+    const back = () => {
+      dlg.classList.remove("leaving");
+      dlg.close();
+      const btn = $("grid").querySelector(`[data-edit="${dlgSku}"]`);
+      if (btn) btn.focus();
+    };
+    if (reduceMotion()) return back();
+    dlg.classList.add("leaving");
+    setTimeout(back, 200);
+  }
+
+  // ---------- уведомление ----------
+  let toastTimer = 0;
+  function toast(text, action) {
+    $("toastText").textContent = text;
+    const btn = $("toastAction");
+    btn.hidden = !action;
+    btn.onclick = action ? () => { hideToast(); action.run(); } : null;
+    if (action) btn.textContent = action.label;
+    $("toast").classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideToast, TOAST_MS);
+  }
+  function hideToast() { $("toast").classList.remove("show"); }
+
+  // ---------- роли ----------
+  function setRole(role) {
+    state.role = role;
+    $("seg").dataset.role = role;
+    const input = $("seg").querySelector(`input[value="${role}"]`);
+    input.checked = true;
+    $("roleHint").innerHTML = ROLE_HINTS[role];
+    $("roleHintM").innerHTML = ROLE_HINTS[role];
+    const isMgr = role === "m";
+    $("portal").classList.toggle("is-mgr", isMgr);
+    $("userName").textContent = isMgr ? "Менеджер" : CLIENTS[role].name;
+    $("userOrg").textContent = isMgr ? "отдел продаж · учебный" : CLIENTS[role].org;
+    $("userAva").textContent = isMgr ? "М" : CLIENTS[role].short;
+    renderCatalog(true);
+    renderSide();
+  }
+  $("seg").addEventListener("change", (e) => setRole(e.target.value));
+
+  // ---------- липкие полосы: высоты для отступов ----------
+  const bar = $("demoBar"), roles = $("roles");
+  const syncHeights = () => {
+    document.documentElement.style.setProperty("--bar-h", bar.offsetHeight + "px");
+    document.documentElement.style.setProperty("--roles-h", roles.offsetHeight + "px");
+  };
+  const ro = new ResizeObserver(() => requestAnimationFrame(syncHeights));
+  ro.observe(bar);
+  ro.observe(roles);
+  new IntersectionObserver(([e]) => roles.classList.toggle("stuck", e.intersectionRatio < 1), { rootMargin: `-${bar.offsetHeight + 1}px 0px 0px 0px`, threshold: 1 }).observe(roles);
+
+  setRole("a");
+})();
+</script>
+</body>
+</html>
