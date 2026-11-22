@@ -1012,6 +1012,14 @@ document.addEventListener("click", (e) => {
   openMailDialog(opener.dataset.mail);
 });
 
+/* «наверх» и логотип: якорь #top — липкая шапка, браузер до неё не доезжает (scroll-padding) — крутим в 0 сами */
+document.addEventListener("click", (e) => {
+  if (!e.target.closest('a[href="#top"]')) return;
+  e.preventDefault();
+  window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  history.replaceState(null, "", location.pathname + location.search);
+});
+
 $("#joinMail").href = mailto(MAIL_JOIN_SUBJECT, MAIL_JOIN_BODY);
 $("#devMail").href = mailto(MAIL_DEV_SUBJECT);
 document.querySelector("[data-copy-email]").innerHTML = ICON.copy;
